@@ -1,0 +1,4828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>EazZy Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0a;
+      --surface:   #111111;
+      --surface2:  #181818;
+      --border:    #242424;
+      --border2:   #2e2e2e;
+      --text:      #e8e2d9;
+      --muted:     #6b6560;
+      --accent:    #c9ff3c;      /* electric lime */
+      --accent2:   #ff4d2e;      /* hot red-orange */
+      --accent3:   #3cffdf;      /* cyan */
+      --gold:      #d4a843;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /*  CUSTOM CURSOR  */
+    #cursor {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform .15s ease, width .2s, height .2s, background .2s;
+    }
+    #cursor-ring {
+      position: fixed; top: 0; left: 0; z-index: 9998;
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(201,255,60,.4);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform .35s cubic-bezier(.22,1,.36,1), width .3s, height .3s;
+    }
+    body:has(a:hover, button:hover, input:hover) #cursor  { width: 8px; height: 8px; background: var(--accent2); }
+    body:has(a:hover, button:hover, input:hover) #cursor-ring { width: 56px; height: 56px; border-color: rgba(255,77,46,.5); }
+
+    /*  NOISE OVERLAY  */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /*  NAV  */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 64px;
+      background: rgba(10,10,10,.85);
+      backdrop-filter: blur(20px) saturate(150%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: var(--text);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .logo span {
+      color: var(--accent);
+    }
+    .logo-dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ box-shadow: 0 0 0 0 rgba(201,255,60,.6); }
+      50%{ box-shadow: 0 0 0 8px rgba(201,255,60,0); }
+    }
+
+    .nav-cats {
+      display: flex; gap: 0;
+      list-style: none;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .nav-cats li a {
+      display: block;
+      padding: .45rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      border-right: 1px solid var(--border);
+      transition: color .2s, background .2s;
+    }
+    .nav-cats li:last-child a { border-right: none; }
+    .nav-cats li a:hover { color: var(--accent); background: rgba(201,255,60,.06); }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .btn-login {
+      display: flex; align-items: center; gap: 8px;
+      padding: .45rem 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      border: none;
+      border-radius: 4px;
+      cursor: none;
+      transition: background .2s, transform .15s;
+    }
+    .btn-login:hover { background: #d4ff5c; transform: translateY(-1px); }
+    .btn-login svg { width: 14px; height: 14px; }
+
+    /*  HERO  */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding-top: 64px;
+    }
+
+    /* Background grid */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,255,60,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,255,60,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* Glows */
+    .glow-left {
+      position: absolute; top: 20%; left: -10%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,77,46,.12) 0%, transparent 70%);
+      pointer-events: none;
+      filter: blur(40px);
+    }
+    .glow-right {
+      position: absolute; top: 30%; right: -5%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(60,255,223,.1) 0%, transparent 70%);
+      pointer-events: none;
+      filter: blur(40px);
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      text-align: center;
+      max-width: 900px;
+      padding: 0 2rem;
+    }
+
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(201,255,60,.3);
+      padding: .35rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+      animation: fadeUp .8s ease both;
+    }
+    .hero-label::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4.5rem, 12vw, 10rem);
+      line-height: .92;
+      letter-spacing: 2px;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      animation: fadeUp .8s .1s ease both;
+    }
+    .hero-title .accent-word { color: var(--accent2); }
+    .hero-title .outline-word {
+      -webkit-text-stroke: 1.5px var(--accent);
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: .5px;
+      margin-bottom: 3rem;
+      animation: fadeUp .8s .2s ease both;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 600; }
+
+    /*  SEARCH BAR  */
+    .search-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      animation: fadeUp .8s .3s ease both;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .search-bar:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(201,255,60,.12), 0 0 40px rgba(201,255,60,.08);
+    }
+
+    .search-icon {
+      padding: 0 1.2rem;
+      display: flex; align-items: center;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .search-icon svg { width: 18px; height: 18px; }
+
+    .search-bar input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .88rem;
+      padding: 1.1rem .5rem;
+      letter-spacing: .5px;
+    }
+    .search-bar input::placeholder { color: var(--muted); }
+
+    .btn-analyze {
+      margin: 6px;
+      padding: .75rem 1.8rem;
+      background: var(--accent2);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 5px;
+      cursor: none;
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      flex-shrink: 0;
+    }
+    .btn-analyze:hover {
+      background: #ff6347;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(255,77,46,.35);
+    }
+    .btn-analyze svg { width: 16px; height: 16px; }
+
+    /* Supported sites chips */
+    .search-hints {
+      display: flex; align-items: center; justify-content: center;
+      gap: .6rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+      animation: fadeUp .8s .4s ease both;
+    }
+    .hint-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    .hint-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem;
+      letter-spacing: .5px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: .25rem .7rem;
+      border-radius: 100px;
+      transition: color .2s, border-color .2s;
+    }
+    .hint-chip:hover { color: var(--accent3); border-color: var(--accent3); }
+
+    /*  FEATURE STRIP  */
+    .feature-strip {
+      position: relative; z-index: 2;
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .feature-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 1.4rem 2rem;
+      border-right: 1px solid var(--border);
+      transition: background .2s;
+    }
+    .feature-item:last-child { border-right: none; }
+    .feature-item:hover { background: var(--surface2); }
+    .feat-icon {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(201,255,60,.08);
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .feat-icon svg { width: 20px; height: 20px; }
+    .feat-text strong {
+      display: block;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .feat-text span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+
+    /*  TRENDING SECTION  */
+    .section {
+      padding: 5rem 2.5rem;
+      position: relative; z-index: 2;
+    }
+
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-title h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      color: var(--text);
+    }
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: .3rem .8rem;
+      border-radius: 4px;
+      background: rgba(255,77,46,.12);
+      color: var(--accent2);
+      border: 1px solid rgba(255,77,46,.25);
+    }
+    .see-all {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      transition: color .2s;
+    }
+    .see-all:hover { color: var(--accent); }
+    .see-all svg { width: 14px; height: 14px; transition: transform .2s; }
+    .see-all:hover svg { transform: translateX(3px); }
+
+    /*  PRODUCT CARDS  */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+    }
+    #trending .product-grid:empty { display: none; }
+
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s, border-color .3s;
+      cursor: none;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border2);
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+
+    .card-img {
+      width: 100%; aspect-ratio: 1;
+      background: var(--surface2);
+      position: relative;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-img img {
+      width: 75%; height: 75%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 20px rgba(0,0,0,.4));
+      transition: transform .4s cubic-bezier(.22,1,.36,1);
+    }
+    .product-card:hover .card-img img { transform: scale(1.08); }
+
+    /* shimmer placeholder */
+    .card-img.placeholder {
+      background: linear-gradient(135deg, var(--surface2) 0%, #1e1e1e 50%, var(--surface2) 100%);
+      background-size: 200% 200%;
+      animation: shimmer 2.5s ease infinite;
+    }
+    @keyframes shimmer {
+      0%{ background-position: 200% 200%; }
+      100%{ background-position: -200% -200%; }
+    }
+
+    .card-badge {
+      position: absolute; top: 10px; left: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .6rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: .28rem .65rem;
+      border-radius: 4px;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+    }
+    .card-badge.hot { color: var(--accent2); border-color: rgba(255,77,46,.4); }
+    .card-badge.deal { color: var(--accent); border-color: rgba(201,255,60,.4); }
+    .card-badge.new-arrival { color: var(--accent3); border-color: rgba(60,255,223,.4); }
+
+    .card-body {
+      padding: 1rem;
+    }
+    .card-category {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .card-name {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-price-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      color: var(--accent);
+    }
+    .card-old-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .card-score {
+      display: flex; align-items: center; gap: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      color: var(--gold);
+    }
+    .card-score svg { width: 12px; height: 12px; }
+
+    .card-analyze-btn {
+      display: none;
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: .7rem;
+      background: var(--accent2);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: none;
+      cursor: none;
+      transition: background .2s;
+      text-align: center;
+    }
+    .product-card:hover .card-analyze-btn { display: block; }
+    .card-analyze-btn:hover { background: #ff6347; }
+
+    /*  STORE TAG  */
+    .store-tag {
+      position: absolute; top: 10px; left: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .58rem; font-weight: 500;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: .22rem .6rem;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      color: var(--text2);
+    }
+
+    /*  CARD ACTIONS (Deal + Compare)  */
+    .card-actions {
+      display: flex; gap: 6px;
+      padding: 0 .9rem .9rem;
+    }
+    .card-deal-btn {
+      flex: 1;
+      padding: .6rem .5rem;
+      background: var(--accent2);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .5px;
+      border: none; border-radius: 6px;
+      cursor: none;
+      transition: background .2s, transform .15s;
+    }
+    .card-deal-btn:hover { background: #ff5f3e; transform: translateY(-1px); }
+    .card-compare-btn {
+      padding: .6rem .7rem;
+      background: var(--surface2);
+      color: var(--accent3);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; font-weight: 500;
+      border: 1px solid rgba(60,255,223,.25);
+      border-radius: 6px;
+      cursor: none;
+      white-space: nowrap;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .card-compare-btn:hover { background: rgba(60,255,223,.08); border-color: var(--accent3); }
+    .card-compare-btn.added {
+      background: rgba(201,255,60,.1);
+      color: var(--accent);
+      border-color: rgba(201,255,60,.35);
+    }
+
+    /*  VIEW MORE BUTTON  */
+    .view-more-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: .75rem 2rem;
+      background: var(--surface2);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: .82rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      cursor: none;
+      transition: border-color .2s, background .2s, color .2s;
+    }
+    .view-more-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(201,255,60,.05); }
+    .view-more-btn svg { width: 16px; height: 16px; transition: transform .3s; }
+
+    /*  HIDDEN ROW  */
+    .deals-hidden {
+      display: none;
+      margin-top: 1rem;
+    }
+    .deals-hidden.show {
+      display: grid;
+      animation: fadeUp .5s ease both;
+    }
+
+    /*  COMPARE SECTION  */
+    .compare-section {
+      animation: compareSlideIn .5s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes compareSlideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .compare-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .compare-close-all {
+      display: flex; align-items: center; gap: 7px;
+      padding: .5rem 1.1rem;
+      background: rgba(255,77,46,.1);
+      color: var(--accent2);
+      border: 1px solid rgba(255,77,46,.25);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; font-weight: 500; letter-spacing: .5px;
+      cursor: none;
+      transition: background .2s;
+    }
+    .compare-close-all:hover { background: rgba(255,77,46,.18); }
+    .compare-close-all svg { width: 14px; height: 14px; }
+
+    .compare-tabs {
+      display: flex; gap: 4px;
+      margin-bottom: 1.5rem;
+    }
+    .ctab {
+      padding: .42rem 1.1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); cursor: none;
+      transition: all .2s;
+    }
+    .ctab.active { background: rgba(60,255,223,.08); border-color: rgba(60,255,223,.3); color: var(--accent3); }
+
+    /* Compare cards row */
+    .compare-cards-row {
+      display: flex; gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      align-items: stretch;
+    }
+
+    .cmp-card {
+      flex: 1; min-width: 180px; max-width: 240px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      transition: border-color .25s;
+    }
+    .cmp-card:hover { border-color: rgba(60,255,223,.35); }
+    .cmp-card.cmp-selected { border-color: var(--accent3); box-shadow: 0 0 0 1px var(--accent3); }
+
+    .cmp-card-img {
+      width: 100%; aspect-ratio: 1;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .cmp-card-img img { width: 80%; height: 80%; object-fit: contain; }
+
+    .cmp-card-body { padding: .85rem .9rem .7rem; }
+    .cmp-card-cat {
+      font-family: 'JetBrains Mono', monospace; font-size: .6rem;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .cmp-card-name {
+      font-size: .82rem; font-weight: 700; color: var(--text);
+      margin-bottom: 6px; line-height: 1.3;
+    }
+    .cmp-card-price {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+      letter-spacing: 1px; color: var(--accent);
+    }
+    .cmp-card-old {
+      font-family: 'JetBrains Mono', monospace; font-size: .65rem;
+      color: var(--muted); text-decoration: line-through; margin-left: 5px;
+    }
+
+    .cmp-card-footer {
+      display: flex; gap: 5px; padding: 0 .9rem .85rem;
+    }
+    .cmp-btn-compare {
+      flex: 1;
+      padding: .52rem;
+      background: rgba(60,255,223,.08);
+      color: var(--accent3);
+      border: 1px solid rgba(60,255,223,.25);
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem; font-weight: 500;
+      cursor: none;
+      transition: background .2s;
+      text-align: center;
+    }
+    .cmp-btn-compare:hover { background: rgba(60,255,223,.15); }
+    .cmp-btn-remove {
+      min-width: 34px;
+      padding: .52rem .65rem;
+      background: rgba(255,77,46,.06);
+      color: var(--accent2);
+      border: 1px solid rgba(255,77,46,.2);
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: none;
+      transition: background .2s;
+    }
+    .cmp-btn-remove:hover { background: rgba(255,77,46,.14); }
+
+    /* VS badge between cards */
+    .vs-badge {
+      display: flex; align-items: center; justify-content: center;
+      align-self: center;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .9rem; letter-spacing: 1px;
+      color: var(--muted); flex-shrink: 0;
+    }
+
+    /* Add slot */
+    .cmp-add-slot {
+      flex: 1; min-width: 150px; max-width: 240px;
+      background: var(--surface);
+      border: 1.5px dashed var(--border2);
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; padding: 2rem 1rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; letter-spacing: .5px;
+      text-align: center;
+    }
+    .cmp-add-slot svg { width: 28px; height: 28px; opacity: .4; }
+
+    /* Spec table */
+    .spec-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+      animation: fadeUp .4s ease both;
+    }
+
+    .spec-table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .spec-table-title {
+      font-family: 'Syne', sans-serif; font-size: 1rem;
+      font-weight: 700; color: var(--text);
+    }
+    .spec-close-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem; color: var(--muted);
+      cursor: none; transition: color .2s;
+    }
+    .spec-close-btn:hover { color: var(--accent2); }
+    .spec-close-btn svg { width: 13px; height: 13px; }
+
+    .spec-table-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .spec-col {
+      padding: 1.2rem 1.5rem;
+      border-right: 1px solid var(--border);
+    }
+    .spec-col:last-child { border-right: none; }
+
+    .spec-product-head {
+      display: flex; flex-direction: column; align-items: center;
+      gap: .7rem; margin-bottom: 1.5rem; text-align: center;
+    }
+    .spec-product-img {
+      width: 80px; height: 80px;
+      background: var(--surface2);
+      border-radius: 8px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .spec-product-img img { width: 75%; height: 75%; object-fit: contain; }
+    .spec-product-name {
+      font-size: .88rem; font-weight: 700; color: var(--text); line-height: 1.3;
+    }
+    .spec-product-price {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+      letter-spacing: 1px; color: var(--accent);
+    }
+
+    .spec-row {
+      border-top: 1px solid var(--border);
+      padding: .8rem 0;
+    }
+    .spec-key {
+      font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .spec-val {
+      font-family: 'JetBrains Mono', monospace; font-size: .78rem;
+      color: var(--text); font-weight: 500;
+    }
+
+    /* Compare toast */
+    .compare-toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface);
+      border: 1px solid rgba(60,255,223,.35);
+      border-radius: 8px;
+      padding: .75rem 1.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem; color: var(--accent3);
+      letter-spacing: .5px;
+      z-index: 500;
+      opacity: 0;
+      transition: transform .35s cubic-bezier(.22,1,.36,1), opacity .35s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .compare-toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+
+    /*  COMPARE PRODUCTS BY URL  */
+    .compare-input-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .compare-input-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .compare-input-card:focus-within {
+      border-color: rgba(201,255,60,.35);
+      box-shadow: 0 8px 30px rgba(0,0,0,.5);
+    }
+
+    .compare-input-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 1.2rem 1.5rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-input-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: rgba(201,255,60,.1);
+      border: 1px solid rgba(201,255,60,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 1px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .compare-input-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--text);
+    }
+
+    .compare-input-body {
+      padding: 1.5rem;
+    }
+
+    .compare-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted);
+      display: block; margin-bottom: .5rem;
+    }
+
+    .compare-url-wrap {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .compare-url-icon {
+      position: absolute; left: 1rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      display: flex; align-items: center;
+      pointer-events: none;
+      transition: color .25s;
+    }
+    .compare-url-icon svg { width: 16px; height: 16px; }
+
+    .compare-url-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: .9rem 1rem .9rem 2.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem;
+      color: var(--text);
+      outline: none;
+      caret-color: var(--accent);
+      transition: border-color .25s, background .25s, box-shadow .25s;
+    }
+    .compare-url-input::placeholder {
+      color: rgba(107,101,96,.5);
+      font-size: .7rem;
+    }
+    .compare-url-input:focus {
+      border-color: rgba(201,255,60,.5);
+      background: rgba(201,255,60,.02);
+      box-shadow: 0 0 0 3px rgba(201,255,60,.08);
+    }
+    .compare-url-wrap:focus-within .compare-url-icon {
+      color: rgba(201,255,60,.7);
+    }
+    .compare-url-input.is-error {
+      border-color: rgba(255,77,46,.55);
+      box-shadow: 0 0 0 3px rgba(255,77,46,.12);
+    }
+    .compare-status {
+      min-height: 1rem;
+      margin: -.35rem 0 .8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: .3px;
+      color: var(--muted);
+    }
+    .compare-status.loading { color: var(--muted); }
+    .compare-status.success { color: rgba(201,255,60,.8); }
+    .compare-status.error { color: var(--accent2); }
+
+    /* Preview card */
+    .compare-preview-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .compare-preview-img {
+      width: 70px; height: 70px;
+      background: var(--surface3);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .compare-preview-img img {
+      width: 80%; height: 80%;
+      object-fit: contain;
+    }
+    .compare-preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .compare-preview-name {
+      font-size: .85rem; font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .compare-preview-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 1px;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .compare-preview-store {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .6rem; letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .compare-preview-remove {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(255,77,46,.1);
+      border: 1px solid rgba(255,77,46,.2);
+      color: var(--accent2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: none;
+      flex-shrink: 0;
+      transition: background .2s;
+    }
+    .compare-preview-remove:hover {
+      background: rgba(255,77,46,.18);
+    }
+    .compare-preview-remove svg {
+      width: 13px; height: 13px;
+    }
+
+    /* Supported stores */
+    .compare-supported-stores {
+      display: flex; align-items: center; gap: 6px;
+      flex-wrap: wrap;
+    }
+    .css-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; letter-spacing: 1px;
+      color: var(--muted);
+    }
+    .css-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .6rem; letter-spacing: .5px;
+      padding: .22rem .6rem;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text2);
+    }
+
+    /* VS center */
+    .compare-vs-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    .compare-vs-circle {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; letter-spacing: 2px;
+      color: var(--accent);
+      box-shadow: 0 0 20px rgba(201,255,60,.15);
+    }
+    .compare-vs-line {
+      width: 2px;
+      height: 80px;
+      background: linear-gradient(180deg, var(--border2), transparent);
+    }
+
+    /* Compare button */
+    .btn-compare-now {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 1rem 2.5rem;
+      background: var(--accent2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 2.5px;
+      cursor: none;
+      position: relative;
+      overflow: hidden;
+      transition: background .2s, transform .15s, box-shadow .2s;
+    }
+    .btn-compare-now::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,.12) 50%, transparent 65%);
+      transform: translateX(-100%);
+      transition: transform .5s;
+    }
+    .btn-compare-now:hover::before {
+      transform: translateX(100%);
+    }
+    .btn-compare-now:hover {
+      background: #ff5f40;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(255,77,46,.35);
+    }
+    .btn-compare-now:disabled {
+      background: var(--surface3);
+      color: var(--muted);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    .btn-compare-now:disabled::before {
+      display: none;
+    }
+
+    /*  POPULAR PRODUCTS BY BUDGET  */
+    .budget-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+    }
+
+    .budget-cat-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 1.5rem 1.3rem;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .budget-cat-card:hover {
+      border-color: rgba(201,255,60,.25);
+      box-shadow: 0 8px 30px rgba(0,0,0,.4);
+    }
+
+    .budget-cat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .budget-cat-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .budget-cat-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--text);
+    }
+
+    .budget-ranges {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+    .budget-range-btn {
+      padding: .7rem .9rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      text-align: center;
+      transition: background .2s, border-color .2s, color .2s, transform .15s;
+    }
+    .budget-range-btn:hover {
+      background: rgba(201,255,60,.06);
+      border-color: rgba(201,255,60,.25);
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    /*  RESPONSIVE  */
+    @media (max-width: 1200px) {
+      .budget-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .budget-grid { grid-template-columns: 1fr; }
+      .compare-input-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .compare-vs-center {
+        flex-direction: row;
+        margin-top: 0;
+      }
+      .compare-vs-line {
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--border2), transparent);
+      }
+    }
+    @media (max-width: 768px) {
+      .spec-modal-body {
+        grid-template-columns: 1fr;
+      }
+      .spec-col {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .spec-col:last-child {
+        border-bottom: none;
+      }
+      .spec-vs-divider {
+        top: auto;
+        bottom: -28px;
+        left: 50%;
+      }
+    }
+
+    /*  SPEC COMPARISON MODAL  */
+    .spec-modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    .spec-modal-overlay.show {
+      opacity: 1; pointer-events: all;
+    }
+
+    .spec-modal {
+      width: 100%; max-width: 900px;
+      max-height: 85vh;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      overflow: hidden;
+      transform: scale(.95);
+      transition: transform .3s cubic-bezier(.22,1,.36,1);
+    }
+    .spec-modal-overlay.show .spec-modal {
+      transform: scale(1);
+    }
+
+    .spec-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .spec-modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--text);
+    }
+    .spec-modal-close {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,77,46,.1);
+      border: 1px solid rgba(255,77,46,.25);
+      color: var(--accent2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: none;
+      transition: background .2s;
+    }
+    .spec-modal-close:hover { background: rgba(255,77,46,.18); }
+    .spec-modal-close svg { width: 16px; height: 16px; }
+
+    .spec-modal-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-height: calc(85vh - 80px);
+      overflow-y: auto;
+    }
+
+    .spec-col {
+      padding: 2rem 2rem;
+      border-right: 1px solid var(--border);
+    }
+    .spec-col:last-child { border-right: none; }
+
+    .spec-prod-head {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .spec-prod-img {
+      width: 120px; height: 120px;
+      background: var(--surface2);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .spec-prod-img img {
+      width: 75%; height: 75%;
+      object-fit: contain;
+    }
+    .spec-prod-name {
+      font-size: 1rem; font-weight: 700;
+      color: var(--text); line-height: 1.3;
+    }
+    .spec-prod-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: 1px;
+      color: var(--accent);
+    }
+
+    .spec-vs-divider {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 2px;
+      color: var(--muted);
+      z-index: 10;
+      box-shadow: 0 0 0 8px var(--surface);
+    }
+
+    .spec-row {
+      border-top: 1px solid var(--border);
+      padding: 1rem 0;
+    }
+    .spec-row:first-of-type { border-top: none; }
+    .spec-key {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .spec-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem; color: var(--text);
+      font-weight: 500; line-height: 1.5;
+    }
+
+    /*  BUDGET RESULTS SECTION  */
+    .budget-results-section {
+      animation: slideUp .5s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .budget-results-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .budget-results-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem; letter-spacing: 2px;
+      color: var(--text); line-height: 1;
+      margin-bottom: .4rem;
+    }
+    .budget-results-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem; color: var(--muted);
+    }
+    .budget-close-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: .6rem 1.3rem;
+      background: rgba(255,77,46,.1);
+      color: var(--accent2);
+      border: 1px solid rgba(255,77,46,.25);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; font-weight: 500;
+      cursor: none;
+      transition: background .2s;
+    }
+    .budget-close-btn:hover { background: rgba(255,77,46,.18); }
+    .budget-close-btn svg { width: 15px; height: 15px; }
+
+    .analysis-results { display: none; }
+    .analysis-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .analysis-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+    .analysis-main { display: grid; grid-template-columns: 150px 1fr; gap: 1rem; align-items: start; }
+    .analysis-right-section { display: flex; flex-direction: column; gap: 1rem; }
+    .analysis-content { flex: 1; }
+    .analysis-actions { display: flex; align-items: center; justify-content: flex-end; }
+    .analysis-img { width: 150px; height: 150px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .analysis-img img { width: 80%; height: 80%; object-fit: contain; }
+    .analysis-name { font-size: 1.2rem; font-weight: 700; line-height: 1.35; margin-bottom: .5rem; }
+    .analysis-meta { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .7rem; font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--muted); }
+    .analysis-pill { padding: .26rem .55rem; border-radius: 999px; border: 1px solid var(--border); background: var(--surface2); }
+    .analysis-price { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; color: var(--accent); line-height: 1; margin-bottom: .3rem; }
+    .analysis-reco { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: 1px; text-transform: uppercase; border-radius: 6px; padding: .25rem .5rem; border: 1px solid var(--border2); margin-top: .3rem; }
+    .analysis-reco.buy { color: var(--accent); border-color: rgba(201,255,60,.35); background: rgba(201,255,60,.08); }
+    .analysis-reco.wait { color: var(--accent2); border-color: rgba(255,77,46,.35); background: rgba(255,77,46,.08); }
+    .analysis-reco.na { color: var(--muted); }
+    .analysis-buy-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1px solid rgba(201,255,60,.3); background: rgba(201,255,60,.08);
+      color: var(--accent); border-radius: 8px; padding: .6rem .8rem;
+      font-family: 'JetBrains Mono', monospace; font-size: .8rem; letter-spacing: .5px;
+      text-transform: uppercase; cursor: none;
+      transition: background .2s, border-color .2s;
+    }
+    .analysis-buy-btn:hover {
+      background: rgba(201,255,60,.15); border-color: rgba(201,255,60,.4);
+    }
+    .analysis-buy-btn svg { width: 16px; height: 16px; }
+    .analysis-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+    .analysis-stat { border: 1px solid var(--border); border-radius: 8px; padding: .65rem; background: var(--surface2); }
+    .analysis-stat-label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: .3rem; }
+    .analysis-stat-value { font-size: .95rem; font-weight: 700; color: var(--text); }
+    .analysis-warning { margin-top: .8rem; border: 1px solid rgba(255,77,46,.35); border-radius: 8px; background: rgba(255,77,46,.08); color: var(--accent2); font-family: 'JetBrains Mono', monospace; font-size: .74rem; line-height: 1.5; padding: .6rem .7rem; }
+    .analysis-tabs { display: flex; gap: .6rem; margin: 1rem 0 .8rem; flex-wrap: wrap; }
+    .analysis-tab-btn { border: 1px solid var(--border); background: var(--surface2); color: var(--muted); border-radius: 6px; padding: .5rem .8rem; font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .6px; cursor: none; }
+    .analysis-tab-btn.active { color: var(--accent3); border-color: rgba(60,255,223,.35); background: rgba(60,255,223,.08); }
+    .analysis-panel { display: none; }
+    .analysis-panel.active { display: block; }
+    .analysis-panel-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+    .prediction-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin-top: .9rem; }
+    .prediction-item { border: 1px solid var(--border); background: var(--surface2); border-radius: 8px; padding: .55rem .6rem; }
+    .prediction-item .k { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--muted); margin-bottom: .2rem; }
+    .prediction-item .v { font-weight: 700; font-size: .9rem; }
+    .analysis-graph-wrap { border: 1px solid var(--border); border-radius: 10px; background: var(--surface2); padding: .5rem; }
+    .platform-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+    .platform-card { border: 1px solid var(--border); background: var(--surface2); border-radius: 10px; padding: .8rem; }
+    .platform-head { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+    .platform-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--accent); margin-bottom: .4rem; letter-spacing: 1px; }
+    .platform-meta { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--muted); line-height: 1.5; margin-bottom: .6rem; }
+    .platform-link { display: inline-block; text-decoration: none; border-radius: 6px; border: 1px solid rgba(60,255,223,.3); background: rgba(60,255,223,.08); color: var(--accent3); font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .5px; padding: .38rem .55rem; }
+
+    /*  CATEGORIES SECTION  */
+    .cats-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+    }
+
+    .cat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.6rem 1rem;
+      text-align: center;
+      cursor: none;
+      transition: transform .25s, border-color .25s, background .25s;
+      text-decoration: none;
+      display: block;
+    }
+    .cat-card:hover {
+      transform: translateY(-4px);
+      background: var(--surface2);
+      border-color: var(--accent);
+    }
+    .cat-icon {
+      width: 52px; height: 52px;
+      margin: 0 auto 1rem;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      transition: background .25s, border-color .25s;
+    }
+    .cat-card:hover .cat-icon {
+      background: rgba(201,255,60,.08);
+      border-color: rgba(201,255,60,.3);
+    }
+    .cat-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .cat-card:hover .cat-name { color: var(--accent); }
+    .cat-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem;
+      color: rgba(107,101,96,.5);
+      margin-top: 4px;
+    }
+
+    /*  AI PROMO BANNER  */
+    .promo-banner {
+      margin: 0 2.5rem 5rem;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3rem 3.5rem;
+    }
+    .promo-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(255,77,46,.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 50%, rgba(60,255,223,.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .promo-left { position: relative; z-index: 1; }
+    .promo-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent3);
+      margin-bottom: 1rem;
+    }
+    .promo-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 2px;
+      line-height: .95;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+    }
+    .promo-title .highlight { color: var(--accent2); }
+    .promo-desc {
+      font-size: .9rem;
+      font-weight: 400;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .promo-btns { display: flex; gap: 1rem; align-items: center; }
+    .btn-primary {
+      padding: .85rem 2rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Syne', sans-serif;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 6px;
+      cursor: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
+    }
+    .btn-primary:hover {
+      background: #d4ff5c;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(201,255,60,.3);
+    }
+    .btn-ghost {
+      padding: .85rem 2rem;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1.5px solid var(--border2);
+      border-radius: 6px;
+      cursor: none;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .promo-right {
+      position: relative; z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .promo-logo-frame {
+      width: clamp(165px, 19vw, 245px);
+      aspect-ratio: 1 / 1;
+      padding: 6px;
+      border-radius: 50%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(12, 36, 44, .95) 0%, rgba(5, 10, 16, .98) 70%);
+      border: 1.5px solid rgba(201,255,60,.35);
+      box-shadow:
+        0 0 0 8px rgba(5, 10, 16, .62),
+        0 14px 36px rgba(0, 0, 0, .42),
+        0 0 28px rgba(60,255,223,.18);
+    }
+    .promo-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+      border: none;
+      image-rendering: auto;
+      filter: none;
+      transform: none;
+      transform-origin: center;
+    }
+    .stat-pill {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .8rem 1.4rem;
+      min-width: 240px;
+    }
+    .stat-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .stat-icon.green { background: rgba(201,255,60,.1); color: var(--accent); }
+    .stat-icon.red { background: rgba(255,77,46,.1); color: var(--accent2); }
+    .stat-icon.cyan { background: rgba(60,255,223,.1); color: var(--accent3); }
+    .stat-icon svg { width: 18px; height: 18px; }
+    .stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      color: var(--text);
+    }
+    .stat-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /*  TICKER  */
+    .ticker-wrap {
+      overflow: hidden;
+      background: var(--accent);
+      padding: .6rem 0;
+      position: relative; z-index: 2;
+    }
+    .ticker-inner {
+      display: flex; gap: 0;
+      animation: ticker 25s linear infinite;
+      width: max-content;
+    }
+    @keyframes ticker {
+      0%{ transform: translateX(0); }
+      100%{ transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: flex; align-items: center; gap: 20px;
+      padding: 0 30px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      color: var(--bg);
+      white-space: nowrap;
+    }
+    .ticker-item::after {
+      content: '';
+      font-size: .8rem;
+      color: rgba(10,10,10,.4);
+    }
+
+    /*  FOOTER  */
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      padding: 3rem 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .footer-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .footer-brand .logo { font-size: 1.5rem; }
+    .footer-brand p {
+      margin-top: .8rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+      max-width: 260px;
+      line-height: 1.7;
+    }
+    .footer-links h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .footer-links ul li a {
+      font-size: .85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links ul li a:hover { color: var(--accent); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem;
+      color: var(--muted);
+      letter-spacing: .5px;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-bottom a { color: var(--muted); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--accent); }
+
+    /*  ANIMATIONS  */
+    @keyframes fadeUp {
+      from{ opacity: 0; transform: translateY(24px); }
+      to{ opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /*  SCROLLBAR  */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /*  RESPONSIVE  */
+    @media (max-width: 1200px) {
+      .product-grid { grid-template-columns: repeat(4, 1fr); }
+      .cats-grid { grid-template-columns: repeat(4, 1fr); }
+      .promo-banner { flex-direction: column; }
+    }
+    @media (max-width: 900px) {
+      .product-grid { grid-template-columns: repeat(3, 1fr); }
+      .cats-grid { grid-template-columns: repeat(3, 1fr); }
+      .nav-cats { display: none; }
+      .feature-strip { flex-wrap: wrap; }
+      .feature-item { flex: none; width: 50%; }
+      .analysis-grid { grid-template-columns: 1fr; }
+      .analysis-main { flex-direction: column; }
+      .analysis-img { width: 120px; height: 120px; }
+      .prediction-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .platform-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .cats-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-item { width: 100%; }
+      nav { padding: 0 1.2rem; }
+      .section { padding: 3rem 1.2rem; }
+      .prediction-list { grid-template-columns: 1fr; }
+    }
+    .analysis-container {
+  max-width: 1400px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header Section */
+.analysis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.analysis-title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.analysis-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.35rem 0.9rem;
+  background: rgba(255, 77, 46, 0.1);
+  border: 1px solid rgba(255, 77, 46, 0.3);
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent2);
+  font-weight: 600;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent2);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.analysis-main-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+  color: var(--text);
+  line-height: 1;
+}
+
+.analysis-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 77, 46, 0.1);
+  border: 1px solid rgba(255, 77, 46, 0.25);
+  color: var(--accent2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.analysis-close-btn:hover {
+  background: rgba(255, 77, 46, 0.2);
+  transform: rotate(90deg);
+}
+
+.analysis-close-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Product Info Section */
+.product-info-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent2), var(--accent), var(--accent3));
+}
+
+.product-main-info {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.product-image-box {
+  width: 140px;
+  height: 140px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-image-box::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(201,255,60,0.2), rgba(255,77,46,0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.product-image-box:hover::after {
+  opacity: 1;
+}
+
+.product-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.product-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+.product-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.meta-item svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+}
+
+.meta-value {
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* Platform Cards Grid */
+/* .platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+*/
+.platform-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 1.8rem;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.platform-card:hover {
+  border-color: rgba(201, 255, 60, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.platform-card.cheapest {
+  border-color: rgba(201, 255, 60, 0.4);
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(201,255,60,0.03) 100%);
+}
+
+.platform-card.cheapest::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 20px var(--accent);
+}
+
+.platform-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.platform-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.platform-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.platform-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 1.5px;
+  color: var(--text);
+}
+
+.cheapest-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.4rem 0.9rem;
+  background: rgba(201, 255, 60, 0.12);
+  border: 1px solid rgba(201, 255, 60, 0.3);
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cheapest-badge svg {
+  width: 12px;
+  height: 12px;
+}
+
+.price-section {
+  margin-bottom: 1.5rem;
+}
+
+.price-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.price-amount {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 1px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.platform-card.cheapest .price-amount {
+  text-shadow: 0 0 30px rgba(201, 255, 60, 0.3);
+}
+
+.savings-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0.8rem;
+  padding: 0.5rem 1rem;
+  background: rgba(201, 255, 60, 0.08);
+  border: 1px solid rgba(201, 255, 60, 0.2);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.savings-tag svg {
+  width: 14px;
+  height: 14px;
+}
+
+.platform-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text2);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.platform-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-platform {
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  background: rgba(201, 255, 60, 0.08);
+  color: var(--accent);
+  border: 1px solid rgba(201, 255, 60, 0.25);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-platform:hover {
+  background: rgba(201, 255, 60, 0.15);
+  border-color: rgba(201, 255, 60, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-platform svg {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-platform.primary {
+  background: var(--accent2);
+  color: #fff;
+  border-color: var(--accent2);
+}
+
+.btn-platform.primary:hover {
+  background: #ff5f40;
+  box-shadow: 0 8px 20px rgba(255, 77, 46, 0.3);
+}
+
+/* Not Found State */
+.platform-not-found {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0.6;
+}
+
+.not-found-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  opacity: 0.3;
+}
+
+.not-found-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Insights Section */
+.insights-section {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.insights-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.insights-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(60, 255, 223, 0.1);
+  border: 1px solid rgba(60, 255, 223, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent3);
+}
+
+.insights-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.insights-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 1.5px;
+  color: var(--text);
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.insight-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.3rem;
+  transition: all 0.2s;
+}
+
+.insight-card:hover {
+  border-color: rgba(60, 255, 223, 0.3);
+  background: rgba(60, 255, 223, 0.02);
+}
+
+.insight-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.insight-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.insight-value.highlight {
+  color: var(--accent3);
+  font-size: 1.4rem;
+}
+
+/* Analyzed URL */
+.analyzed-url-section {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  margin-top: 2rem;
+}
+
+.analyzed-url-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+
+.analyzed-url-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent3);
+  text-decoration: none;
+  word-break: break-all;
+  line-height: 1.6;
+  transition: color 0.2s;
+}
+
+.analyzed-url-link:hover {
+  color: var(--accent);
+}
+
+/* Responsive */
+/* @media (max-width: 1200px) {
+  .platforms-grid {
+    grid-template-columns: 1fr;
+  }
+} */
+
+@media (max-width: 768px) {
+  .analysis-container {
+    padding: 0 1rem;
+  }
+  
+  .product-main-info {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .product-image-box {
+    margin: 0 auto;
+  }
+  
+  .product-meta {
+    justify-content: center;
+  }
+  
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .price-amount {
+    font-size: 2.5rem;
+  }
+}
+
+    /*  MOBILE / TOUCH FRIENDLY  */
+    @media (hover: none) and (pointer: coarse) {
+      body, body * { cursor: auto !important; }
+      #cursor, #cursor-ring { display: none !important; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; height: 56px; }
+      .hero { padding-top: 56px; min-height: 100vh; }
+      .hero-inner { padding: 0 1rem; }
+      .hero-title { font-size: clamp(2.5rem, 12vw, 5rem); }
+      .search-wrap { padding: 0 .5rem; }
+      .search-bar { display: grid; grid-template-columns: auto minmax(0, 1fr); border-radius: 10px; }
+      .search-bar input { min-height: 48px; font-size: 16px; }
+      .btn-analyze { min-height: 44px; padding: .85rem 1.2rem; margin: 8px 0 10px; grid-column: 1 / -1; justify-self: center; }
+      .feature-strip { flex-direction: column; }
+      .feature-item { width: 100%; padding: 1rem 1.2rem; border-right: none; border-bottom: 1px solid var(--border); }
+      .feature-item:last-child { border-bottom: none; }
+      .glow-left, .glow-right { width: 200px; height: 200px; filter: blur(24px); }
+      .section { padding: 2.5rem 1rem; }
+      .product-card { min-width: 0; }
+      .card-deal-btn, .card-compare-btn, .card-analyze-btn { min-height: 44px; }
+      #trending .section-head { align-items: flex-start; flex-wrap: wrap; gap: .6rem 1rem; }
+      #trending .section-title { flex-wrap: wrap; gap: .45rem .65rem; min-width: 0; }
+      #trending .section-title h2 { font-size: 1.9rem; line-height: .95; }
+      #trending .see-all { margin-left: auto; }
+      #trending .product-grid + .product-grid { margin-top: .75rem !important; }
+    }
+    @media (max-width: 480px) {
+      nav { padding: 0 .75rem; }
+      .section { padding: 2rem .75rem; }
+      .hero-sub { font-size: .9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!--  NAVIGATION  -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-dot"></div>
+    EazZy<span>Shop</span>
+  </a>
+
+  <ul class="nav-cats">
+    <li><a href="#">Phones</a></li>
+    <li><a href="#">Laptops</a></li>
+    <li><a href="#">Refrigerators</a></li>
+    <li><a href="#">TVs</a></li>
+    <li><a href="#">Dishwashers</a></li>
+    <li><a href="#">Washing</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <button class="btn-login">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      Login
+    </button>
+  </div>
+</nav>
+
+<!--  HERO  -->
+<section class="hero">
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
+
+  <div class="hero-inner">
+    <div class="hero-label">AI-Powered Price Intelligence</div>
+
+    <h1 class="hero-title">
+      Shop<br>
+      <span class="accent-word">Smart</span> <span class="outline-word">Save</span><br>
+      More
+    </h1>
+
+    <p class="hero-sub">
+      Paste any product link  our AI scans <strong>price history, reviews & alternatives</strong><br>
+      to tell you if it's worth buying right now.
+    </p>
+
+    <div class="search-wrap">
+      <div class="search-bar">
+        <div class="search-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </div>
+        <input type="text" placeholder="Paste your Amazon, eBay or any product link here...">
+        <button class="btn-analyze">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          Analyze
+        </button>
+      </div>
+      <div class="search-hints">
+        <span class="hint-label">Works with:</span>
+        <span class="hint-chip">Amazon</span>
+        <span class="hint-chip">Flipkart</span>
+        <span class="hint-chip">Myntra</span>
+        <span class="hint-chip">Meesho</span>
+        <span class="hint-chip">Reliance Digital</span>
+        <span class="hint-chip">+ 20 more</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!--  TICKER  -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <div class="ticker-item">Real-time price tracking</div>
+    <div class="ticker-item">AI deal scoring</div>
+    <div class="ticker-item">Review analysis</div>
+    <div class="ticker-item">Price history charts</div>
+    <div class="ticker-item">Best time to buy alerts</div>
+    <div class="ticker-item">Cross-store comparison</div>
+    <div class="ticker-item">Fake review detection</div>
+    <div class="ticker-item">Real-time price tracking</div>
+    <div class="ticker-item">AI deal scoring</div>
+    <div class="ticker-item">Review analysis</div>
+    <div class="ticker-item">Price history charts</div>
+    <div class="ticker-item">Best time to buy alerts</div>
+    <div class="ticker-item">Cross-store comparison</div>
+    <div class="ticker-item">Fake review detection</div>
+  </div>
+</div>
+
+<!--  FEATURE STRIP  -->
+<div class="feature-strip fade-in">
+  <div class="feature-item">
+    <div class="feat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </div>
+    <div class="feat-text">
+      <strong>Live Price Tracking</strong>
+      <span>Updates every 15 minutes</span>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <div class="feat-text">
+      <strong>Deep AI Analysis</strong>
+      <span>GPT-powered review insights</span>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+      </svg>
+    </div>
+    <div class="feat-text">
+      <strong>Buy-Time Alerts</strong>
+      <span>Get notified at lowest price</span>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    </div>
+    <div class="feat-text">
+      <strong>45+ Retailers</strong>
+      <span>Amazon, eBay, BestBuy & more</span>
+    </div>
+  </div>
+</div>
+<section class="section analysis-results" id="analysisResults">
+  <div class="section-head">
+    <div class="section-title">
+      <h2>Analysis Results</h2>
+      <span class="badge">Live</span>
+    </div>
+  </div>
+
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <div class="analysis-main">
+        <div class="analysis-img">
+          <img id="analysisImage" src="" alt="Analyzed product" loading="lazy">
+        </div>
+        <div class="analysis-right-section">
+          <div class="analysis-content">
+            <div class="analysis-name" id="analysisName">Product</div>
+            <div class="analysis-meta">
+              <span class="analysis-pill" id="analysisSource">Source</span>
+              <span class="analysis-pill" id="analysisCheapest">Cheapest: N/A</span>
+              <span class="analysis-pill" id="analysisDiff">Diff: N/A</span>
+            </div>
+            <div class="analysis-price" id="analysisCurrentPrice">Rs 0</div>
+            <div class="analysis-reco na" id="analysisRecommendation">Recommendation: N/A</div>
+            <div class="analysis-warning" id="analysisWarning" style="display:none"></div>
+          </div>
+          <div class="analysis-actions">
+            <button class="analysis-buy-btn" id="analysisBuyBtn" onclick="buyAnalyzedProduct()" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/>
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+              </svg>
+              Buy Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analysis-card">
+      <div class="analysis-stats">
+        <div class="analysis-stat">
+          <div class="analysis-stat-label">Confidence</div>
+          <div class="analysis-stat-value" id="analysisConfidence">0%</div>
+        </div>
+        <div class="analysis-stat">
+          <div class="analysis-stat-label">Max Savings</div>
+          <div class="analysis-stat-value" id="analysisSavings">N/A</div>
+        </div>
+        <div class="analysis-stat">
+          <div class="analysis-stat-label">Best Buy Time</div>
+          <div class="analysis-stat-value" id="analysisBestTime">Now</div>
+        </div>
+        <div class="analysis-stat">
+          <div class="analysis-stat-label">Savings Percent</div>
+          <div class="analysis-stat-value" id="analysisSavingsPct">0%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="analysis-tabs">
+    <button class="analysis-tab-btn active" data-analysis-tab="overview">Overview</button>
+    <button class="analysis-tab-btn" data-analysis-tab="prediction">Prediction</button>
+    <!-- <button class="analysis-tab-btn" data-analysis-tab="platforms">Platforms</button> -->
+  </div>
+
+  <div class="analysis-panel active" id="analysisPanelOverview">
+    <div class="analysis-panel-card">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--muted);margin-bottom:.6rem;">Analyzed URL</div>
+      <a id="analysisUrl" href="#" target="_blank" rel="noopener noreferrer" style="color:var(--accent3);word-break:break-all;font-family:'JetBrains Mono',monospace;font-size:.75rem;"></a>
+      <div style="margin-top:.9rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);line-height:1.6;" id="analysisSummary"></div>
+    </div>
+  </div>
+
+  <div class="analysis-panel" id="analysisPanelPrediction">
+    <div class="analysis-panel-card">
+      <div class="analysis-graph-wrap" id="analysisGraphWrap"></div>
+      <div class="prediction-list" id="analysisPredictionList"></div>
+    </div>
+  </div>
+
+  <div class="analysis-panel" id="analysisPanelPlatforms">
+    <div class="analysis-panel-card">
+      <div class="platform-grid">
+        <div class="platform-card">
+          <div class="platform-head">Amazon</div>
+          <div class="platform-price" id="analysisAmazonPrice">N/A</div>
+          <div class="platform-meta" id="analysisAmazonMeta">Not available</div>
+          <a class="platform-link" id="analysisAmazonLink" href="#" target="_blank" rel="noopener noreferrer">Open Amazon</a>
+        </div>
+        <div class="platform-card">
+          <div class="platform-head">Flipkart</div>
+          <div class="platform-price" id="analysisFlipkartPrice">N/A</div>
+          <div class="platform-meta" id="analysisFlipkartMeta">Not available</div>
+          <a class="platform-link" id="analysisFlipkartLink" href="#" target="_blank" rel="noopener noreferrer">Open Flipkart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--  CATEGORIES  -->
+<!-- <section class="section fade-in">
+  <div class="section-head">
+    <div class="section-title">
+      <h2>Browse Categories</h2>
+    </div>
+  </div>
+  <div class="cats-grid">
+    <a href="#" class="cat-card">
+      <div class="cat-icon">M</div>
+      <div class="cat-name">Phones</div>
+      <div class="cat-count">4,820 products</div>
+    </a>
+    <a href="#" class="cat-card">
+      <div class="cat-icon">L</div>
+      <div class="cat-name">Laptops</div>
+      <div class="cat-count">2,391 products</div>
+    </a>
+    <a href="#" class="cat-card">
+      <div class="cat-icon">R</div>
+      <div class="cat-name">Refrigerators</div>
+      <div class="cat-count">760 products</div>
+    </a>
+    <a href="#" class="cat-card">
+      <div class="cat-icon">TV</div>
+      <div class="cat-name">Televisions</div>
+      <div class="cat-count">1,150 products</div>
+    </a>
+    <a href="#" class="cat-card">
+      <div class="cat-icon">DW</div>
+      <div class="cat-name">Dishwashers</div>
+      <div class="cat-count">310 products</div>
+    </a>
+    <a href="#" class="cat-card">
+      <div class="cat-icon">WM</div>
+      <div class="cat-name">Washing Machines</div>
+      <div class="cat-count">445 products</div>
+    </a>
+  </div>
+</section> -->
+
+<!--  TRENDING DEALS  -->
+<section class="section" style="padding-top:0" id="trending">
+  <div class="section-head fade-in">
+    <div class="section-title">
+      <h2>Trending Deals</h2>
+      <span class="badge">Hot Right Now</span>
+    </div>
+    <a href="#" class="see-all">
+      See all
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <!-- ROW 1 -->
+  <div class="product-grid" id="deals-row-1">
+
+    <div class="product-card fade-in" data-id="1" data-name="MacBook Pro 14&quot; M3 Pro" data-cat="Laptops" data-price="$1,659" data-old="$2,049" data-disc="18%" data-score="4.8" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80" data-specs='{"Display":"14.2&quot; Liquid Retina XDR","Processor":"Apple M3 Pro","RAM":"18GB","Storage":"512GB SSD","Battery":"Up to 18h","OS":"macOS Sonoma"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80" alt="MacBook Pro">
+        <span class="card-badge hot">18% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Laptops</div>
+        <div class="card-name">MacBook Pro 14" M3 Pro</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,659</div><div class="card-old-price">$2,049</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="2" data-name="LG 65&quot; OLED evo C3" data-cat="Televisions" data-price="$1,599" data-old="$1,999" data-disc="18%" data-score="4.7" data-store="FLIPKART" data-img="https://images.unsplash.com/photo-1593359677879-a4bb92f829e1?w=300&q=80" data-specs='{"Display":"65&quot; OLED evo","Resolution":"4K UHD","HDR":"Dolby Vision IQ","Processor":"9 Gen6 AI","Smart TV":"webOS 23","Refresh Rate":"120Hz"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829e1?w=300&q=80" alt="LG OLED">
+        <span class="card-badge deal">18% OFF</span>
+        <span class="store-tag">FLIPKART</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Televisions</div>
+        <div class="card-name">LG 65" OLED evo C3</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,599</div><div class="card-old-price">$1,999</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="3" data-name="Sony WH-1000XM5" data-cat="Audio" data-price="$279" data-old="$349" data-disc="18%" data-score="4.9" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80" data-specs='{"Type":"Over-Ear","ANC":"Industry-leading","Battery":"30h","Charging":"USB-C","Codec":"LDAC, AAC","Connectivity":"Bluetooth 5.2"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80" alt="Sony Headphones">
+        <span class="card-badge hot">18% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Audio</div>
+        <div class="card-name">Sony WH-1000XM5</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$279</div><div class="card-old-price">$349</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="4" data-name="Daikin 1.5 Ton 5 Star Inverter" data-cat="Air Conditioners" data-price="$374" data-old="$455" data-disc="18%" data-score="4.6" data-store="FLIPKART" data-img="https://images.unsplash.com/photo-1631449035042-a0be6e2b9aa9?w=300&q=80" data-specs='{"Capacity":"1.5 Ton","Star Rating":"5 Star","Type":"Split AC","Compressor":"Inverter","Cooling":"Streamer Technology","Warranty":"5 yr compressor"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1631449035042-a0be6e2b9aa9?w=300&q=80" alt="Daikin AC">
+        <span class="card-badge deal">18% OFF</span>
+        <span class="store-tag">FLIPKART</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Air Conditioners</div>
+        <div class="card-name">Daikin 1.5 Ton 5 Star</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$374</div><div class="card-old-price">$455</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.6</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="5" data-name="Whirlpool 265L Frost Free" data-cat="Refrigerators" data-price="$274" data-old="$336" data-disc="18%" data-score="4.5" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=300&q=80" data-specs='{"Capacity":"265 Liters","Type":"Frost Free","Doors":"Double Door","Star Rating":"3 Star","Compressor":"Intellisense Inverter","Warranty":"1 yr comprehensive"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=300&q=80" alt="Whirlpool Fridge">
+        <span class="card-badge deal">18% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Refrigerators</div>
+        <div class="card-name">Whirlpool 265L Frost Free</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$274</div><div class="card-old-price">$336</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.5</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+  </div><!-- /row 1 -->
+
+  <!-- ROW 2 (shown by default) -->
+  <div class="product-grid" id="deals-row-2" style="margin-top:1rem;">
+
+    <div class="product-card fade-in" data-id="6" data-name="Apple iPhone 15 Pro Max" data-cat="Phones" data-price="$1,341" data-old="$1,630" data-disc="17%" data-score="4.8" data-store="FLIPKART" data-img="https://images.unsplash.com/photo-1695048133142-1a20484bce71?w=300&q=80" data-specs='{"Display":"6.7&quot; Super Retina XDR","Chip":"A17 Pro","Camera":"48MP Main + 12MP Ultra Wide","Battery":"Up to 29h video","Storage":"256GB","OS":"iOS 17"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1695048133142-1a20484bce71?w=300&q=80" alt="iPhone 15 Pro Max">
+        <span class="card-badge hot">17% OFF</span>
+        <span class="store-tag">FLIPKART</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Phones</div>
+        <div class="card-name">Apple iPhone 15 Pro Max</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,341</div><div class="card-old-price">$1,630</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="7" data-name="Bosch 8 Kg Fully Automatic" data-cat="Washing Machines" data-price="$365" data-old="$436" data-disc="16%" data-score="4.6" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80" data-specs='{"Capacity":"8 kg","Type":"Front Load","RPM":"1200","Programs":"15","Energy Rating":"A+++","Warranty":"2 yr"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80" alt="Bosch Washing Machine">
+        <span class="card-badge deal">16% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Washing Machines</div>
+        <div class="card-name">Bosch 8 Kg Fully Automatic</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$365</div><div class="card-old-price">$436</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.6</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="8" data-name='Sony 55" Bravia XR A80L OLED' data-cat="Televisions" data-price="$1,346" data-old="$1,579" data-disc="14%" data-score="4.7" data-store="FLIPKART" data-img="https://images.unsplash.com/photo-1601944177325-f8867652837f?w=300&q=80" data-specs='{"Display":"55&quot; OLED","Resolution":"4K HDR","Processor":"Cognitive XR","Sound":"Acoustic Surface Audio+","Smart TV":"Google TV","Refresh Rate":"120Hz"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1601944177325-f8867652837f?w=300&q=80" alt="Sony Bravia OLED">
+        <span class="card-badge new-arrival">14% OFF</span>
+        <span class="store-tag">FLIPKART</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Televisions</div>
+        <div class="card-name">Sony 55" Bravia XR A80L</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,346</div><div class="card-old-price">$1,579</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="9" data-name='Samsung 55" Neo QLED 4K QN90C' data-cat="Televisions" data-price="$1,266" data-old="$1,487" data-disc="14%" data-score="4.7" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=300&q=80" data-specs='{"Display":"55&quot; Neo QLED","Resolution":"4K UHD","HDR":"HDR10+, HLG","Processor":"Neo Quantum 4K","Smart TV":"Tizen OS","Refresh Rate":"144Hz"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=300&q=80" alt="Samsung Neo QLED">
+        <span class="card-badge deal">14% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Televisions</div>
+        <div class="card-name">Samsung 55" Neo QLED QN90C</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,266</div><div class="card-old-price">$1,487</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="10" data-name="Lenovo ThinkPad X1 Carbon Gen 11" data-cat="Laptops" data-price="$1,251" data-old="$1,459" data-disc="14%" data-score="4.8" data-store="FLIPKART" data-img="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&q=80" data-specs='{"Display":"14&quot; IPS Anti-glare","Processor":"Intel Core i7-1365U","RAM":"16GB LPDDR5","Storage":"512GB SSD","Battery":"Up to 15h","OS":"Windows 11 Pro"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&q=80" alt="Lenovo ThinkPad">
+        <span class="card-badge deal">14% OFF</span>
+        <span class="store-tag">FLIPKART</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Laptops</div>
+        <div class="card-name">Lenovo ThinkPad X1 Carbon</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,251</div><div class="card-old-price">$1,459</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+  </div><!-- /row 2 -->
+
+  <!-- VIEW MORE BUTTON -->
+  <div style="text-align:center; margin-top:2rem;" class="fade-in">
+    <button class="view-more-btn" id="viewMoreBtn" onclick="toggleMoreDeals()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="vmIcon"><path d="M6 9l6 6 6-6"/></svg>
+      View More Deals
+    </button>
+  </div>
+
+  <!-- HIDDEN ROW 3 -->
+  <div class="product-grid deals-hidden" id="deals-row-3">
+
+    <div class="product-card fade-in" data-id="11" data-name="Samsung Galaxy S24 Ultra" data-cat="Phones" data-price="$1,199" data-old="$1,399" data-disc="14%" data-score="4.9" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300&q=80" data-specs='{"Display":"6.8&quot; Dynamic AMOLED 2X","Chip":"Snapdragon 8 Gen 3","Camera":"200MP Main","Battery":"5000mAh","RAM":"12GB","Storage":"256GB"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300&q=80" alt="Samsung S24 Ultra">
+        <span class="card-badge hot">14% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Phones</div>
+        <div class="card-name">Samsung Galaxy S24 Ultra</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,199</div><div class="card-old-price">$1,399</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="12" data-name="iPad Pro 12.9 M2" data-cat="Tablets" data-price="$949" data-old="$1,099" data-disc="13%" data-score="4.8" data-store="FLIPKART" data-img="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&q=80" data-specs='{"Display":"12.9&quot; Liquid Retina XDR","Chip":"Apple M2","Storage":"256GB","RAM":"8GB","Connectivity":"Wi-Fi 6E","OS":"iPadOS 17"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&q=80" alt="iPad Pro">
+        <span class="card-badge deal">13% OFF</span>
+        <span class="store-tag">FLIPKART</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Tablets</div>
+        <div class="card-name">iPad Pro 12.9" M2</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$949</div><div class="card-old-price">$1,099</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="13" data-name="Dyson V15 Detect" data-cat="Appliances" data-price="$549" data-old="$649" data-disc="15%" data-score="4.7" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1558317374-067fb5f30001?w=300&q=80" data-specs='{"Type":"Cordless Vacuum","Suction":"230 AW","Battery":"60 min","Detection":"Laser Dust","Filter":"HEPA","Warranty":"2 yr"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1558317374-067fb5f30001?w=300&q=80" alt="Dyson V15">
+        <span class="card-badge hot">15% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Appliances</div>
+        <div class="card-name">Dyson V15 Detect</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$549</div><div class="card-old-price">$649</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="14" data-name="Bose QuietComfort 45" data-cat="Audio" data-price="$229" data-old="$279" data-disc="17%" data-score="4.7" data-store="FLIPKART" data-img="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80" data-specs='{"Type":"Over-Ear","ANC":"Adaptive ANC","Battery":"24h","Charging":"USB-C","Codec":"AAC","Connectivity":"Bluetooth 5.1"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80" alt="Bose QC45">
+        <span class="card-badge deal">17% OFF</span>
+        <span class="store-tag">FLIPKART</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Audio</div>
+        <div class="card-name">Bose QuietComfort 45</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$229</div><div class="card-old-price">$279</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+    <div class="product-card fade-in" data-id="15" data-name="Dell XPS 15 9530" data-cat="Laptops" data-price="$1,549" data-old="$1,799" data-disc="13%" data-score="4.7" data-store="AMAZON" data-img="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80" data-specs='{"Display":"15.6&quot; OLED Touch","Processor":"Intel Core i7-13700H","RAM":"16GB DDR5","Storage":"512GB NVMe","GPU":"NVIDIA RTX 4060","Battery":"Up to 13h"}'>
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80" alt="Dell XPS 15">
+        <span class="card-badge deal">13% OFF</span>
+        <span class="store-tag">AMAZON</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">Laptops</div>
+        <div class="card-name">Dell XPS 15 9530</div>
+        <div class="card-price-row">
+          <div><div class="card-price">$1,549</div><div class="card-old-price">$1,799</div></div>
+          <div class="card-score"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn" onclick="addToCompare(this)">Compare</button>
+      </div>
+    </div>
+
+  </div><!-- /row 3 hidden -->
+
+</section>
+
+<!--  COMPARE PANEL  -->
+<section class="section compare-section fade-in" id="compareSection" style="padding-top:0; display:none;">
+  <div class="compare-header">
+    <div class="section-title">
+      <h2>Compare Products</h2>
+      <span class="badge" style="background:rgba(60,255,223,.12);color:var(--accent3);border-color:rgba(60,255,223,.25);">Side by Side</span>
+    </div>
+    <button class="compare-close-all" onclick="closeCompare()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      Close Compare
+    </button>
+  </div>
+
+  <!-- Category tabs -->
+  <div class="compare-tabs" id="compareTabs">
+    <button class="ctab active">Selected Products</button>
+  </div>
+
+  <!-- Compare cards row -->
+  <div class="compare-cards-row" id="compareCardsRow">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- Spec table -->
+  <div class="spec-table-wrap" id="specTableWrap" style="display:none;">
+    <div class="spec-table-header">
+      <h3 class="spec-table-title">Product Specifications</h3>
+      <button class="spec-close-btn" onclick="closeSpecTable()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        Close
+      </button>
+    </div>
+    <div class="spec-table-body" id="specTableBody">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+</section>
+
+<!--  POPULAR PRODUCTS COMPARISON  -->
+<section class="section fade-in" style="padding-top:0">
+  <div class="section-head">
+    <div class="section-title">
+      <h2>Compare Products Side by Side</h2>
+    </div>
+  </div>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);margin-bottom:2rem;">Paste product URLs from any supported retailer to compare specifications</p>
+
+  <!-- Comparison input cards -->
+  <div class="compare-input-grid">
+    
+    <!-- Product 1 Input -->
+    <div class="compare-input-card">
+      <div class="compare-input-header">
+        <div class="compare-input-icon">1</div>
+        <h3 class="compare-input-title">First Product</h3>
+      </div>
+      
+      <div class="compare-input-body">
+        <label class="compare-label">Product URL</label>
+        <div class="compare-url-wrap">
+          <span class="compare-url-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            class="compare-url-input" 
+            id="compareUrl1"
+            placeholder="https://www.amazon.in/product-url or flipkart.com/..."
+          >
+        </div>
+        <div class="compare-status" id="compareStatus1" aria-live="polite"></div>
+
+        <!-- Preview card (shown after URL is entered) -->
+        <div class="compare-preview-card" id="preview1" style="display:none">
+          <div class="compare-preview-img" id="previewImg1">
+            <img src="" alt="" id="previewImgSrc1">
+          </div>
+          <div class="compare-preview-info">
+            <div class="compare-preview-name" id="previewName1"></div>
+            <div class="compare-preview-price" id="previewPrice1"></div>
+            <div class="compare-preview-store" id="previewStore1"></div>
+          </div>
+          <button class="compare-preview-remove" onclick="clearProduct(1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="compare-supported-stores">
+          <span class="css-label">Supported:</span>
+          <span class="css-badge">Amazon</span>
+          <span class="css-badge">Flipkart</span>
+          <span class="css-badge">+ 40 more</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VS Badge -->
+    <div class="compare-vs-center">
+      <div class="compare-vs-circle">VS</div>
+      <div class="compare-vs-line"></div>
+    </div>
+
+    <!-- Product 2 Input -->
+    <div class="compare-input-card">
+      <div class="compare-input-header">
+        <div class="compare-input-icon">2</div>
+        <h3 class="compare-input-title">Second Product</h3>
+      </div>
+      
+      <div class="compare-input-body">
+        <label class="compare-label">Product URL</label>
+        <div class="compare-url-wrap">
+          <span class="compare-url-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            class="compare-url-input" 
+            id="compareUrl2"
+            placeholder="https://www.amazon.in/product-url or flipkart.com/..."
+          >
+        </div>
+        <div class="compare-status" id="compareStatus2" aria-live="polite"></div>
+
+        <!-- Preview card -->
+        <div class="compare-preview-card" id="preview2" style="display:none">
+          <div class="compare-preview-img" id="previewImg2">
+            <img src="" alt="" id="previewImgSrc2">
+          </div>
+          <div class="compare-preview-info">
+            <div class="compare-preview-name" id="previewName2"></div>
+            <div class="compare-preview-price" id="previewPrice2"></div>
+            <div class="compare-preview-store" id="previewStore2"></div>
+          </div>
+          <button class="compare-preview-remove" onclick="clearProduct(2)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="compare-supported-stores">
+          <span class="css-label">Supported:</span>
+          <span class="css-badge">Amazon</span>
+          <span class="css-badge">Flipkart</span>
+          <span class="css-badge">+ 40 more</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Compare button -->
+  <div style="text-align:center;margin-top:2rem;">
+    <button class="btn-compare-now" id="btnCompareNow" onclick="compareUrlProducts()" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px">
+        <path d="M9 18l6-6-6-6"/>
+        <path d="M15 18l6-6-6-6"/>
+      </svg>
+      Compare Products
+    </button>
+  </div>
+</section>
+
+<!--  POPULAR PRODUCTS BY BUDGET  -->
+<section class="section fade-in" style="padding-top:0" id="budgetSection">
+  <div class="section-head">
+    <div class="section-title">
+      <h2>Popular Products By Budget</h2>
+    </div>
+  </div>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);margin-bottom:2rem;">Find the best products in your price range</p>
+
+  <!-- Budget grid -->
+  <div class="budget-grid">
+    
+    <div class="budget-cat-card">
+      <div class="budget-cat-header">
+        <div class="budget-cat-icon" style="background:rgba(147,51,234,.1)">M</div>
+        <h3 class="budget-cat-title">Mobiles</h3>
+      </div>
+      <div class="budget-ranges">
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('mobiles',10000,20000);return false">Rs. 10,000 - Rs. 20,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('mobiles',20000,30000);return false">Rs. 20,000 - Rs. 30,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('mobiles',30000,40000);return false">Rs. 30,000 - Rs. 40,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('mobiles',40000,50000);return false">Rs. 40,000 - Rs. 50,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('mobiles',50000,60000);return false">Rs. 50,000 - Rs. 60,000</a>
+      </div>
+    </div>
+
+    <div class="budget-cat-card">
+      <div class="budget-cat-header">
+        <div class="budget-cat-icon" style="background:rgba(59,130,246,.1)">L</div>
+        <h3 class="budget-cat-title">Laptops</h3>
+      </div>
+      <div class="budget-ranges">
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('laptops',30000,35000);return false">Rs. 30,000 - Rs. 35,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('laptops',35000,40000);return false">Rs. 35,000 - Rs. 40,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('laptops',45000,50000);return false">Rs. 45,000 - Rs. 50,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('laptops',50000,60000);return false">Rs. 50,000 - Rs. 60,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('laptops',70000,80000);return false">Rs. 70,000 - Rs. 80,000</a>
+      </div>
+    </div>
+
+    <div class="budget-cat-card">
+      <div class="budget-cat-header">
+        <div class="budget-cat-icon" style="background:rgba(14,165,233,.1)">AC</div>
+        <h3 class="budget-cat-title">Air Conditioners</h3>
+      </div>
+      <div class="budget-ranges">
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('ac',20000,25000);return false">Rs. 20,000 - Rs. 25,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('ac',25000,30000);return false">Rs. 25,000 - Rs. 30,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('ac',30000,35000);return false">Rs. 30,000 - Rs. 35,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('ac',35000,40000);return false">Rs. 35,000 - Rs. 40,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('ac',40000,50000);return false">Rs. 40,000 - Rs. 50,000</a>
+      </div>
+    </div>
+
+    <div class="budget-cat-card">
+      <div class="budget-cat-header">
+        <div class="budget-cat-icon" style="background:rgba(6,182,212,.1)">R</div>
+        <h3 class="budget-cat-title">Refrigerators</h3>
+      </div>
+      <div class="budget-ranges">
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('fridge',10000,12000);return false">Rs. 10,000 - Rs. 12,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('fridge',15000,20000);return false">Rs. 15,000 - Rs. 20,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('fridge',20000,25000);return false">Rs. 20,000 - Rs. 25,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('fridge',30000,50000);return false">Rs. 30,000 - Rs. 50,000</a>
+        <a href="#" class="budget-range-btn" onclick="filterByBudget('fridge',50000,80000);return false">Rs. 50,000 - Rs. 80,000</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!--  BUDGET FILTER RESULTS  -->
+<section class="section budget-results-section" id="budgetResults" style="display:none">
+  <div class="budget-results-header">
+    <div>
+      <h2 class="budget-results-title" id="budgetResultsTitle">Mobiles Rs. 7,000 - Rs. 10,000</h2>
+      <p class="budget-results-sub" id="budgetResultsSub">8 products found</p>
+    </div>
+    <button class="budget-close-btn" onclick="closeBudgetResults()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      Close
+    </button>
+  </div>
+  <div class="product-grid" id="budgetResultsGrid">
+    <!-- filled by JS -->
+  </div>
+</section>
+
+<!--  SPEC COMPARISON MODAL  -->
+<div class="spec-modal-overlay" id="specModal">
+  <div class="spec-modal">
+    <div class="spec-modal-header">
+      <h2 class="spec-modal-title">Product Specifications Comparison</h2>
+      <button class="spec-modal-close" onclick="closeSpecModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="spec-modal-body" id="specModalBody">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!--  PROMO BANNER  -->
+<div class="promo-banner fade-in">
+  <div class="promo-left">
+    <div class="promo-eyebrow"> AI-Powered Intelligence</div>
+    <h2 class="promo-title">
+      Let AI do<br>
+      the <span class="highlight">heavy</span><br>
+      lifting
+    </h2>
+    <p class="promo-desc">
+      Stop wasting hours reading reviews and comparing prices.
+      EazZy Shop's AI scans thousands of data points in seconds 
+      price history, real vs. fake reviews, and the perfect moment to buy.
+    </p>
+    <!-- <div class="promo-btns">
+      <button class="btn-primary">Try It Free</button>
+      <button class="btn-ghost">How It Works</button>
+    </div> -->
+  </div>
+  <div class="promo-right">
+    <div class="promo-logo-frame">
+      <img
+        class="promo-logo"
+        src="/static/logo.png"
+        alt="Swami Vivekananda University logo"
+      >
+    </div>
+  </div>
+  <!-- <div class="promo-right">
+    <div class="stat-pill">
+      <div class="stat-icon green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+          <polyline points="17 6 23 6 23 12"/>
+        </svg>
+      </div>
+      <div> -->
+        <!-- <div class="stat-val">$2.4M+</div>
+        <div class="stat-lbl">Saved by our users this month</div> -->
+      <!-- </div>
+    </div> -->
+    <!-- <div class="stat-pill">
+      <div class="stat-icon red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 14.14 14.14"/>
+        </svg>
+      </div>
+      <div> -->
+        <!-- <div class="stat-val">1.8M</div>
+        <div class="stat-lbl">Fake reviews detected &amp; flagged</div> -->
+      <!-- </div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-icon cyan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div> -->
+        <!-- <div class="stat-val">45+</div>
+        <div class="stat-lbl">Retailers analyzed in real-time</div> -->
+      <!-- </div>
+    </div>
+  </div> -->
+</div>
+
+<!--  FOOTER  -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-dot"></div>
+        EazZy<span>Shop</span>
+      </a>
+      <p>AI-powered price intelligence for smarter consumer decisions.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#">How It Works</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Browser Extension</a></li>
+        <li><a href="#">API Access</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#">Phones</a></li>
+        <li><a href="#">Laptops</a></li>
+        <li><a href="#">TVs</a></li>
+        <li><a href="#">Appliances</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span> 2026 EazZy Shop. All rights reserved.</span>
+    <span>
+      <a href="#">Privacy Policy</a> &nbsp;&nbsp;
+      <a href="#">Terms of Service</a>
+    </span>
+  </div>
+</footer>
+
+<div class="compare-toast" id="compareToast"></div>
+
+<script>
+  /*  CURSOR (desktop only – hidden on touch to avoid jank)  */
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (isTouch && cur && ring) {
+    cur.style.display = 'none';
+    ring.style.display = 'none';
+  } else if (cur && ring) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+    });
+    (function loop() {
+      rx += (mx - rx) * .12; ry += (my - ry) * .12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  /*  SCROLL REVEAL  */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  document.querySelectorAll('.product-card.fade-in').forEach((el, i) => {
+    el.style.transitionDelay = (i * 70) + 'ms';
+  });
+
+  /*  SEARCH BAR  */
+  const searchInput = document.querySelector('.search-bar input');
+  searchInput.addEventListener('focus', () => document.querySelector('.search-bar').style.borderColor = 'var(--accent)');
+  searchInput.addEventListener('blur',  () => document.querySelector('.search-bar').style.borderColor = 'var(--border2)');
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const analyzeBtn = document.querySelector('.btn-analyze');
+      if (analyzeBtn) analyzeBtn.click();
+    }
+  });
+
+  /*  VIEW MORE DEALS  */
+  const TRENDING_ROWS_PER_CLICK = 2;
+  let trendingDealsData = [];
+  let trendingRenderedCount = 0;
+  let trendingCardsPerRow = 5;
+  let trendingResizeTimer = null;
+
+  function getTrendingCardsPerRow() {
+    const width = window.innerWidth || document.documentElement.clientWidth || 1200;
+    if (width <= 600) return 2;
+    if (width <= 900) return 3;
+    if (width <= 1200) return 4;
+    return 5;
+  }
+
+  function getTrendingBatchSize() {
+    return trendingCardsPerRow * TRENDING_ROWS_PER_CLICK;
+  }
+
+  function ensureTrendingMoreContainer() {
+    let container = document.getElementById('deals-more-container');
+    if (container) return container;
+
+    const row2 = document.getElementById('deals-row-2');
+    const moreBtn = document.getElementById('viewMoreBtn');
+    const moreWrap = moreBtn ? moreBtn.parentElement : null;
+    if (!row2 || !moreWrap || !row2.parentNode) return null;
+
+    container = document.createElement('div');
+    container.id = 'deals-more-container';
+    row2.parentNode.insertBefore(container, moreWrap);
+    return container;
+  }
+
+  function getOrCreateTrendingExtraRow(rowIndex) {
+    const container = ensureTrendingMoreContainer();
+    if (!container) return null;
+
+    let row = container.querySelector(`[data-trending-row="${rowIndex}"]`);
+    if (!row) {
+      row = document.createElement('div');
+      row.className = 'product-grid';
+      row.style.marginTop = '1rem';
+      row.dataset.trendingRow = String(rowIndex);
+      container.appendChild(row);
+    }
+    return row;
+  }
+
+  function resetTrendingRows() {
+    const row1 = document.getElementById('deals-row-1');
+    const row2 = document.getElementById('deals-row-2');
+    const row3 = document.getElementById('deals-row-3');
+    const container = ensureTrendingMoreContainer();
+
+    if (row1) row1.innerHTML = '';
+    if (row2) row2.innerHTML = '';
+    if (container) container.innerHTML = '';
+
+    // Keep legacy hidden row empty so old static cards never reappear.
+    if (row3) {
+      row3.innerHTML = '';
+      row3.classList.remove('show');
+      row3.style.display = 'none';
+    }
+  }
+
+  function updateTrendingMoreButton() {
+    const moreBtn = document.getElementById('viewMoreBtn');
+    if (!moreBtn) return;
+    const hasMore = trendingRenderedCount < trendingDealsData.length;
+    moreBtn.style.display = hasMore ? 'inline-flex' : 'none';
+    moreBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="vmIcon" style="width:16px;height:16px"><path d="M6 9l6 6 6-6"/></svg>
+      View More Deals
+    `;
+  }
+
+  function observeTrendingCards() {
+    if (typeof observer === 'undefined') return;
+    const row1 = document.getElementById('deals-row-1');
+    const row2 = document.getElementById('deals-row-2');
+    if (row1) row1.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+    if (row2) row2.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+    const container = ensureTrendingMoreContainer();
+    if (container) container.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+  }
+
+  function appendTrendingRange(start, end) {
+    const row1 = document.getElementById('deals-row-1');
+    const row2 = document.getElementById('deals-row-2');
+    if (!row1 || !row2 || trendingDealsData.length === 0) return;
+
+    for (let i = start; i < end; i++) {
+      const deal = trendingDealsData[i];
+      const card = createTrendingCard(deal, i);
+      if (i < trendingCardsPerRow) {
+        row1.appendChild(card);
+      } else if (i < trendingCardsPerRow * 2) {
+        row2.appendChild(card);
+      } else {
+        const extraIndex = i - (trendingCardsPerRow * 2);
+        const extraRowIndex = Math.floor(extraIndex / trendingCardsPerRow);
+        const extraRow = getOrCreateTrendingExtraRow(extraRowIndex);
+        if (extraRow) extraRow.appendChild(card);
+      }
+    }
+  }
+
+  function rerenderTrendingRows() {
+    if (trendingDealsData.length === 0) return;
+    const keepCount = Math.min(trendingRenderedCount, trendingDealsData.length);
+    resetTrendingRows();
+    appendTrendingRange(0, keepCount);
+    trendingRenderedCount = keepCount;
+    updateTrendingMoreButton();
+    observeTrendingCards();
+  }
+
+  function renderTrendingBatch() {
+    const row1 = document.getElementById('deals-row-1');
+    const row2 = document.getElementById('deals-row-2');
+    if (!row1 || !row2 || trendingDealsData.length === 0) {
+      updateTrendingMoreButton();
+      return;
+    }
+
+    const start = trendingRenderedCount;
+    const end = Math.min(start + getTrendingBatchSize(), trendingDealsData.length);
+    appendTrendingRange(start, end);
+    trendingRenderedCount = end;
+    updateTrendingMoreButton();
+    observeTrendingCards();
+  }
+
+  function toggleMoreDeals() {
+    renderTrendingBatch();
+  }
+
+  trendingCardsPerRow = getTrendingCardsPerRow();
+
+  window.addEventListener('resize', () => {
+    if (trendingResizeTimer) clearTimeout(trendingResizeTimer);
+    trendingResizeTimer = setTimeout(() => {
+      const nextCardsPerRow = getTrendingCardsPerRow();
+      if (nextCardsPerRow === trendingCardsPerRow) return;
+      trendingCardsPerRow = nextCardsPerRow;
+      rerenderTrendingRows();
+    }, 150);
+  });
+
+  /*  COMPARE SYSTEM  */
+  let compareList = []; // array of product data objects (max 4)
+
+  function parseCardSpecs(rawSpecs) {
+    const text = String(rawSpecs || '').trim();
+    if (!text) return {};
+    try {
+      const parsed = JSON.parse(text);
+      return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function buildMarketplaceUrl(name, store) {
+    const query = encodeURIComponent(String(name || '').trim().slice(0, 80));
+    if (!query) return '';
+    return String(store || '').toUpperCase() === 'FLIPKART'
+      ? `https://www.flipkart.com/search?q=${query}`
+      : `https://www.amazon.in/s?k=${query}`;
+  }
+
+  function wireDealButton(card, explicitUrl = '') {
+    if (!card) return;
+    const dealBtn = card.querySelector('.card-deal-btn');
+    if (!dealBtn || dealBtn.dataset.bound === 'true') return;
+    dealBtn.dataset.bound = 'true';
+
+    dealBtn.addEventListener('click', () => {
+      const buyUrl = String(
+        explicitUrl ||
+        card.dataset.buyUrl ||
+        buildMarketplaceUrl(card.dataset.name, card.dataset.store)
+      ).trim();
+      if (buyUrl) {
+        window.open(buyUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        showToast('Deal link unavailable for this product');
+      }
+    });
+  }
+
+  function wireInitialTrendingDealButtons() {
+    document.querySelectorAll('#trending .product-card').forEach((card) => {
+      wireDealButton(card);
+    });
+  }
+
+  function getCardData(card) {
+    if (!card) return null;
+    return {
+      id:    card.dataset.id,
+      name:  card.dataset.name,
+      cat:   card.dataset.cat,
+      price: card.dataset.price,
+      old:   card.dataset.old,
+      disc:  card.dataset.disc,
+      score: card.dataset.score,
+      store: card.dataset.store,
+      img:   card.dataset.img,
+      specs: parseCardSpecs(card.dataset.specs)
+    };
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('compareToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  function addToCompare(btn) {
+    const card = btn.closest('.product-card');
+    const data = getCardData(card);
+    if (!data || !data.id) {
+      showToast('Could not read product details');
+      return;
+    }
+    const already = compareList.find(p => p.id === data.id);
+    if (already) {
+      removeFromCompare(data.id);
+      return;
+    }
+    if (compareList.length >= 4) {
+      showToast('Maximum 4 products can be compared at once');
+      return;
+    }
+    compareList.push(data);
+    btn.classList.add('added');
+    btn.textContent = 'Added';
+    showToast(`${data.name} added to compare`);
+    renderCompareSection();
+  }
+
+  function removeFromCompare(id) {
+    compareList = compareList.filter(p => p.id !== id);
+    // reset button
+    document.querySelectorAll('.product-card').forEach(card => {
+      if (card.dataset.id === id) {
+        const b = card.querySelector('.card-compare-btn');
+        if (b) { b.classList.remove('added'); b.textContent = 'Compare'; }
+      }
+    });
+    renderCompareSection();
+    closeSpecTable();
+  }
+
+  function renderCompareSection() {
+    const section = document.getElementById('compareSection');
+    const row     = document.getElementById('compareCardsRow');
+
+    if (compareList.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+
+    section.style.display = 'block';
+    // scroll into view smoothly
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+    row.innerHTML = '';
+
+    compareList.forEach((p, idx) => {
+      // VS badge between cards
+      if (idx > 0) {
+        const vs = document.createElement('div');
+        vs.className = 'vs-badge';
+        vs.textContent = 'VS';
+        row.appendChild(vs);
+      }
+
+      const card = document.createElement('div');
+      card.className = 'cmp-card';
+      card.innerHTML = `
+        <div class="cmp-card-img">
+          <img src="${p.img}" alt="${p.name}" loading="lazy">
+        </div>
+        <div class="cmp-card-body">
+          <div class="cmp-card-cat">${p.store}  ${p.cat}</div>
+          <div class="cmp-card-name">${p.name}</div>
+          <div>
+            <span class="cmp-card-price">${p.price}</span>
+            <span class="cmp-card-old">${p.old}</span>
+          </div>
+        </div>
+        <div class="cmp-card-footer">
+          <button class="cmp-btn-compare" onclick="openSpecTable('${p.id}')">View Specs</button>
+          <button class="cmp-btn-remove" onclick="removeFromCompare('${p.id}')" title="Remove product" aria-label="Remove product">×</button>
+        </div>
+      `;
+      row.appendChild(card);
+    });
+
+    // add empty slot if < 4
+    if (compareList.length < 4) {
+      if (compareList.length > 0) {
+        const vs = document.createElement('div');
+        vs.className = 'vs-badge';
+        vs.innerHTML = '+';
+        row.appendChild(vs);
+      }
+      const slot = document.createElement('div');
+      slot.className = 'cmp-add-slot';
+      slot.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>Add product<br>to compare</span>
+      `;
+      row.appendChild(slot);
+    }
+  }
+
+  /*  SPEC TABLE  */
+  let specPair = []; // up to 2 product ids to show specs for
+
+  function openSpecTable(id) {
+    const p = compareList.find(x => x.id === id);
+    if (!p) return;
+
+    if (specPair.includes(id)) {
+      // deselect
+      specPair = specPair.filter(x => x !== id);
+    } else {
+      if (specPair.length >= 2) specPair.shift();
+      specPair.push(id);
+    }
+
+    if (specPair.length === 0) { closeSpecTable(); return; }
+
+    const wrap = document.getElementById('specTableWrap');
+    const body = document.getElementById('specTableBody');
+    wrap.style.display = 'block';
+
+    const products = specPair.map(sid => compareList.find(x => x.id === sid)).filter(Boolean);
+
+    // collect all spec keys
+    const allKeys = [...new Set(products.flatMap(p => Object.keys(p.specs)))];
+
+    body.innerHTML = '';
+
+    products.forEach(prod => {
+      const col = document.createElement('div');
+      col.className = 'spec-col';
+      col.innerHTML = `
+        <div class="spec-product-head">
+          <div class="spec-product-img"><img src="${prod.img}" alt="${prod.name}"></div>
+          <div class="spec-product-name">${prod.name}</div>
+          <div class="spec-product-price">${prod.price}</div>
+        </div>
+        ${allKeys.map(k => `
+          <div class="spec-row">
+            <div class="spec-key">${k}</div>
+            <div class="spec-val">${prod.specs[k] || ''}</div>
+          </div>
+        `).join('')}
+      `;
+      body.appendChild(col);
+    });
+
+    // if only 1 product selected, add placeholder col
+    if (products.length === 1) {
+      const ph = document.createElement('div');
+      ph.className = 'spec-col';
+      ph.style.cssText = 'display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--muted);font-family:JetBrains Mono,monospace;font-size:.75rem;';
+      ph.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:36px;height:36px;opacity:.3"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg><span>Select another product<br>to compare side by side</span>`;
+      body.appendChild(ph);
+    }
+
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function closeSpecTable() {
+    specPair = [];
+    document.getElementById('specTableWrap').style.display = 'none';
+  }
+
+  function closeCompare() {
+    compareList = [];
+    specPair = [];
+    document.querySelectorAll('.card-compare-btn').forEach(b => {
+      b.classList.remove('added'); b.textContent = 'Compare';
+    });
+    document.getElementById('compareSection').style.display = 'none';
+  }
+
+  /*  URL-BASED PRODUCT COMPARISON  */
+  let product1 = null;
+  let product2 = null;
+  const compareFetchNonce = { 1: 0, 2: 0 };
+
+  function escapeCompareHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatComparePrice(value) {
+    const num = Number(value);
+    if (!Number.isFinite(num) || num <= 0) return 'N/A';
+    return `Rs. ${num.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+  }
+
+  function getCompareApiBase() {
+    if (typeof API_URL !== 'undefined' && API_URL) return API_URL;
+    return window.location.origin;
+  }
+
+  function buildComparePlaceholderImage(name) {
+    const safe = escapeCompareHtml(String(name || 'Product').slice(0, 24));
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+        <rect width="120" height="120" rx="10" fill="#121212"/>
+        <rect x="10" y="10" width="100" height="100" rx="8" fill="none" stroke="#2a2a2a"/>
+        <text x="60" y="60" text-anchor="middle" fill="#7a746e" font-size="11" font-family="Arial, sans-serif">${safe}</text>
+      </svg>
+    `;
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
+
+  function setProductForSlot(num, product) {
+    if (num === 1) product1 = product;
+    else product2 = product;
+  }
+
+  function setCompareStatus(num, message, mode = '') {
+    const el = document.getElementById('compareStatus' + num);
+    if (!el) return;
+    el.className = 'compare-status';
+    if (mode) el.classList.add(mode);
+    el.textContent = String(message || '');
+  }
+
+  function showPreview(num, product) {
+    const preview = document.getElementById('preview' + num);
+    const input = document.getElementById('compareUrl' + num);
+    const imgEl = document.getElementById('previewImgSrc' + num);
+    const name = String(product.name || 'Product');
+    const imgSrc = String(product.img || '').trim() || buildComparePlaceholderImage(name);
+
+    imgEl.onerror = () => {
+      imgEl.onerror = null;
+      imgEl.src = buildComparePlaceholderImage(name);
+    };
+    imgEl.src = imgSrc;
+    imgEl.alt = name;
+
+    document.getElementById('previewName' + num).textContent = name;
+    document.getElementById('previewPrice' + num).textContent = product.priceText || formatComparePrice(product.price);
+    document.getElementById('previewStore' + num).textContent = String(product.store || 'UNKNOWN');
+
+    input.classList.remove('is-error');
+    input.style.display = 'none';
+    preview.style.display = 'flex';
+  }
+
+  function clearProduct(num) {
+    const preview = document.getElementById('preview' + num);
+    const input = document.getElementById('compareUrl' + num);
+
+    compareFetchNonce[num] += 1;
+    setProductForSlot(num, null);
+    input.value = '';
+    input.disabled = false;
+    input.classList.remove('is-error');
+    input.style.display = 'block';
+    preview.style.display = 'none';
+    setCompareStatus(num, '');
+    checkCompareReady();
+  }
+
+  function buyAnalyzedProduct() {
+    const urlEl = document.getElementById('analysisUrl');
+    const url = urlEl.href;
+    if (url && url !== '#') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+  function checkCompareReady() {
+    const btn = document.getElementById('btnCompareNow');
+    btn.disabled = !(product1 && product2);
+  }
+
+  function normalizeCompareProduct(raw) {
+    const specsRaw = (raw.specs && typeof raw.specs === 'object') ? raw.specs : {};
+    const specs = {};
+    Object.entries(specsRaw).forEach(([k, v]) => {
+      const key = String(k || '').trim();
+      const val = String(v || '').trim();
+      if (key && val) specs[key] = val;
+    });
+
+    return {
+      name: String(raw.name || 'Product').trim(),
+      price: raw.price,
+      priceText: formatComparePrice(raw.price),
+      store: String(raw.store || 'UNKNOWN').toUpperCase(),
+      img: String(raw.image_url || '').trim(),
+      url: String(raw.url || '').trim(),
+      specs
+    };
+  }
+
+  async function fetchCompareProduct(num, url) {
+    const input = document.getElementById('compareUrl' + num);
+    const preview = document.getElementById('preview' + num);
+    const nonce = ++compareFetchNonce[num];
+
+    setProductForSlot(num, null);
+    checkCompareReady();
+    preview.style.display = 'none';
+    input.style.display = 'block';
+    input.disabled = true;
+    input.classList.remove('is-error');
+    setCompareStatus(num, 'Fetching product details...', 'loading');
+
+    try {
+      const response = await fetch(`${getCompareApiBase()}/api/compare/product`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ url })
+      });
+
+      const raw = await response.text();
+      let data = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch (err) {
+        throw new Error(`Server returned non-JSON response (HTTP ${response.status}).`);
+      }
+
+      if (nonce !== compareFetchNonce[num]) return;
+
+      if (response.status === 401) {
+        window.location.href = '/login.html';
+        return;
+      }
+      if (!response.ok || !data.success || !data.product) {
+        throw new Error(String(data.error || 'Could not extract product details from URL'));
+      }
+
+      const product = normalizeCompareProduct(data.product);
+      setProductForSlot(num, product);
+      showPreview(num, product);
+      if (data.warning) {
+        setCompareStatus(num, String(data.warning), 'loading');
+      } else {
+        setCompareStatus(num, 'Product loaded', 'success');
+      }
+      checkCompareReady();
+    } catch (error) {
+      if (nonce !== compareFetchNonce[num]) return;
+      setProductForSlot(num, null);
+      input.disabled = false;
+      input.classList.add('is-error');
+      preview.style.display = 'none';
+      setCompareStatus(num, String(error.message || 'Could not load product details'), 'error');
+      checkCompareReady();
+    } finally {
+      if (nonce === compareFetchNonce[num]) {
+        input.disabled = false;
+      }
+    }
+  }
+
+  function handleCompareInputPaste(num) {
+    const input = document.getElementById('compareUrl' + num);
+    if (!input) return;
+    setTimeout(() => {
+      const url = String(input.value || '').trim();
+      if (!url) {
+        setCompareStatus(num, 'Please paste a product URL', 'error');
+        input.classList.add('is-error');
+        setProductForSlot(num, null);
+        checkCompareReady();
+        return;
+      }
+      fetchCompareProduct(num, url);
+    }, 60);
+  }
+
+  document.getElementById('compareUrl1').addEventListener('paste', () => handleCompareInputPaste(1));
+  document.getElementById('compareUrl2').addEventListener('paste', () => handleCompareInputPaste(2));
+  document.getElementById('compareUrl1').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const url = String(e.target.value || '').trim();
+      if (url) fetchCompareProduct(1, url);
+    }
+  });
+  document.getElementById('compareUrl2').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const url = String(e.target.value || '').trim();
+      if (url) fetchCompareProduct(2, url);
+    }
+  });
+
+  function compareUrlProducts() {
+    if (product1 && product2) {
+      openSpecModal(product1, product2);
+    }
+  }
+
+  /*  SPEC COMPARISON MODAL  */
+  function openSpecModal(prod1, prod2) {
+    const modal = document.getElementById('specModal');
+    const body = document.getElementById('specModalBody');
+    const specs1 = (prod1.specs && typeof prod1.specs === 'object') ? prod1.specs : {};
+    const specs2 = (prod2.specs && typeof prod2.specs === 'object') ? prod2.specs : {};
+    const allKeys = [...new Set([...Object.keys(specs1), ...Object.keys(specs2)])];
+    if (allKeys.length === 0) allKeys.push('Specifications');
+
+    const prod1Name = escapeCompareHtml(prod1.name || 'Product');
+    const prod2Name = escapeCompareHtml(prod2.name || 'Product');
+    const prod1Price = escapeCompareHtml(prod1.priceText || formatComparePrice(prod1.price));
+    const prod2Price = escapeCompareHtml(prod2.priceText || formatComparePrice(prod2.price));
+    const prod1Img = escapeCompareHtml(prod1.img || buildComparePlaceholderImage(prod1.name));
+    const prod2Img = escapeCompareHtml(prod2.img || buildComparePlaceholderImage(prod2.name));
+
+    body.innerHTML = `
+      <div class="spec-vs-divider">VS</div>
+      <div class="spec-col">
+        <div class="spec-prod-head">
+          <div class="spec-prod-img"><img src="${prod1Img}" alt="${prod1Name}"></div>
+          <div class="spec-prod-name">${prod1Name}</div>
+          <div class="spec-prod-price">${prod1Price}</div>
+        </div>
+        ${allKeys.map(k => `
+          <div class="spec-row">
+            <div class="spec-key">${escapeCompareHtml(k)}</div>
+            <div class="spec-val">${escapeCompareHtml(specs1[k] || 'N/A')}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="spec-col">
+        <div class="spec-prod-head">
+          <div class="spec-prod-img"><img src="${prod2Img}" alt="${prod2Name}"></div>
+          <div class="spec-prod-name">${prod2Name}</div>
+          <div class="spec-prod-price">${prod2Price}</div>
+        </div>
+        ${allKeys.map(k => `
+          <div class="spec-row">
+            <div class="spec-key">${escapeCompareHtml(k)}</div>
+            <div class="spec-val">${escapeCompareHtml(specs2[k] || 'N/A')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSpecModal() {
+    document.getElementById('specModal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // close modal on backdrop click
+  document.getElementById('specModal').addEventListener('click', e => {
+    if (e.target.id === 'specModal') closeSpecModal();
+  });
+
+  wireInitialTrendingDealButtons();
+
+  /*  BUDGET FILTER  */
+  // Load budget products from backend data.csv endpoint
+  const budgetCategoryNames = {
+    mobiles: 'Mobiles',
+    laptops: 'Laptops',
+    ac: 'Air Conditioners',
+    fridge: 'Refrigerators'
+  };
+
+  function escapeBudgetHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatBudgetPrice(value) {
+    const num = Number(value);
+    if (!Number.isFinite(num) || num <= 0) return 'N/A';
+    return `Rs. ${num.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+  }
+
+  function getBudgetApiBase() {
+    if (typeof API_URL !== 'undefined' && API_URL) return API_URL;
+    return window.location.origin;
+  }
+
+  function createBudgetCard(product, index, category) {
+    const name = String(product.name || 'Product');
+    const store = String(product.store || 'AMAZON').toUpperCase();
+    const cat = String(product.cat || budgetCategoryNames[category] || 'Products');
+    const inRange = product.in_range !== false;
+    const badgeText = inRange ? 'IN RANGE' : 'CLOSEST';
+    const badgeClass = inRange ? 'deal' : 'new-arrival';
+    const score = Number.isFinite(Number(product.rating)) ? Number(product.rating).toFixed(1) : '4.5';
+    const imageUrl = String(product.img || '').trim();
+    const priceNum = Number(product.price);
+    const displayPrice = formatBudgetPrice(priceNum);
+    const productId = String(product.id || `${category}-${index + 1}`);
+    const specs = (product.specs && typeof product.specs === 'object') ? product.specs : {};
+
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.dataset.id = `budget-${productId}`;
+    card.dataset.name = name;
+    card.dataset.cat = cat;
+    card.dataset.price = displayPrice;
+    card.dataset.old = '';
+    card.dataset.disc = badgeText;
+    card.dataset.score = score;
+    card.dataset.store = store;
+    card.dataset.img = imageUrl;
+    card.dataset.specs = JSON.stringify(specs);
+    card.dataset.buyUrl = String(product.buy_url || '').trim();
+
+    card.innerHTML = `
+      <div class="card-img">
+        <img src="${escapeBudgetHtml(imageUrl)}" alt="${escapeBudgetHtml(name)}" loading="lazy">
+        <span class="card-badge ${badgeClass}">${badgeText}</span>
+        <span class="store-tag">${escapeBudgetHtml(store)}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category">${escapeBudgetHtml(cat)}</div>
+        <div class="card-name">${escapeBudgetHtml(name)}</div>
+        <div class="card-price-row">
+          <div><div class="card-price">${escapeBudgetHtml(displayPrice)}</div></div>
+          <div class="card-score">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            ${escapeBudgetHtml(score)}
+          </div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="card-deal-btn">Get Deal</button>
+        <button class="card-compare-btn">Compare</button>
+      </div>
+    `;
+
+    wireDealButton(card, String(product.buy_url || '').trim());
+
+    const compareBtn = card.querySelector('.card-compare-btn');
+    if (compareBtn) {
+      compareBtn.addEventListener('click', () => addToCompare(compareBtn));
+    }
+
+    return card;
+  }
+
+  async function filterByBudget(category, minPrice, maxPrice) {
+    const resultsSec = document.getElementById('budgetResults');
+    const title = document.getElementById('budgetResultsTitle');
+    const sub = document.getElementById('budgetResultsSub');
+    const grid = document.getElementById('budgetResultsGrid');
+
+    const categoryLabel = budgetCategoryNames[category] || category;
+    title.textContent = `${categoryLabel} Rs. ${minPrice.toLocaleString('en-IN')} - Rs. ${maxPrice.toLocaleString('en-IN')}`;
+    sub.textContent = 'Loading products from data.csv...';
+    grid.innerHTML = `<div style="grid-column:1 / -1;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.8rem;">Loading...</div>`;
+    resultsSec.style.display = 'block';
+
+    try {
+      const params = new URLSearchParams({
+        category,
+        min_price: String(minPrice),
+        max_price: String(maxPrice),
+        limit: '12'
+      });
+
+      const response = await fetch(`${getBudgetApiBase()}/api/products/budget?${params.toString()}`, {
+        credentials: 'include'
+      });
+
+      if (response.status === 401) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Could not load products for this budget');
+      }
+
+      const products = Array.isArray(data.products) ? data.products : [];
+      const fallbackUsed = Boolean(data.fallback_used);
+      if (fallbackUsed) {
+        sub.textContent = `${products.length} closest product${products.length !== 1 ? 's' : ''} shown from data.csv (no exact range match)`;
+      } else {
+        sub.textContent = `${products.length} product${products.length !== 1 ? 's' : ''} found in data.csv`;
+      }
+
+      grid.innerHTML = '';
+      if (products.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1 / -1;padding:1rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.78rem;">
+            No products in this budget range for ${escapeBudgetHtml(categoryLabel)} in current data.
+          </div>
+        `;
+      } else {
+        products.forEach((product, index) => {
+          grid.appendChild(createBudgetCard(product, index, category));
+        });
+      }
+    } catch (error) {
+      console.error('Budget filter error:', error);
+      sub.textContent = 'Could not load budget products';
+      grid.innerHTML = `
+        <div style="grid-column:1 / -1;padding:1rem;border:1px solid rgba(255,77,46,.35);border-radius:8px;background:rgba(255,77,46,.08);color:var(--accent2);font-family:'JetBrains Mono',monospace;font-size:.78rem;">
+          ${escapeBudgetHtml(error.message || 'Could not load products')}
+        </div>
+      `;
+    }
+
+    setTimeout(() => resultsSec.scrollIntoView({behavior: 'smooth', block: 'start'}), 100);
+  }
+
+  function closeBudgetResults() {
+    document.getElementById('budgetResults').style.display = 'none';
+    document.getElementById('budgetSection').scrollIntoView({behavior: 'smooth'});
+  }
+</script>
+
+  <!-- Authentication Check -->
+  <script>
+    const API_URL = 'http://localhost:5000';
+
+    function formatDealPrice(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num) || num <= 0) return 'N/A';
+      return `Rs. ${num.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function createTrendingCard(deal, index) {
+      const discount = Math.max(0, Number(deal.discount_pct) || 0);
+      const badgeClass = discount >= 15 ? 'hot' : (discount >= 8 ? 'deal' : 'new-arrival');
+      const badgeText = discount > 0 ? `${discount}% OFF` : 'LIVE';
+      const store = String(deal.store || 'AMAZON').toUpperCase();
+      const name = String(deal.name || 'Product');
+      const category = String(deal.category || 'Products');
+      const currentPrice = formatDealPrice(deal.current_price);
+      const oldPrice = formatDealPrice(deal.old_price);
+      const score = Number.isFinite(Number(deal.score)) ? Number(deal.score).toFixed(1) : '4.5';
+      const imageUrl = String(deal.image_url || '');
+      const specs = (deal.specs && typeof deal.specs === 'object') ? deal.specs : {};
+
+      const card = document.createElement('div');
+      card.className = 'product-card fade-in';
+      card.dataset.id = `trend-${deal.id || index + 1}`;
+      card.dataset.name = name;
+      card.dataset.cat = category;
+      card.dataset.price = currentPrice;
+      card.dataset.old = oldPrice;
+      card.dataset.disc = `${discount}%`;
+      card.dataset.score = score;
+      card.dataset.store = store;
+      card.dataset.img = imageUrl;
+      card.dataset.specs = JSON.stringify(specs);
+      card.dataset.buyUrl = String(deal.buy_url || '').trim();
+
+      card.innerHTML = `
+        <div class="card-img">
+          <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy">
+          <span class="card-badge ${badgeClass}">${escapeHtml(badgeText)}</span>
+          <span class="store-tag">${escapeHtml(store)}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-category">${escapeHtml(category)}</div>
+          <div class="card-name">${escapeHtml(name)}</div>
+          <div class="card-price-row">
+            <div>
+              <div class="card-price">${escapeHtml(currentPrice)}</div>
+              <div class="card-old-price">${escapeHtml(oldPrice)}</div>
+            </div>
+            <div class="card-score">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              ${escapeHtml(score)}
+            </div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="card-deal-btn">Get Deal</button>
+          <button class="card-compare-btn">Compare</button>
+        </div>
+      `;
+
+      wireDealButton(card, String(deal.buy_url || '').trim());
+
+      const compareBtn = card.querySelector('.card-compare-btn');
+      if (compareBtn) {
+        compareBtn.addEventListener('click', () => addToCompare(compareBtn));
+      }
+
+      return card;
+    }
+
+    async function loadTrendingDeals() {
+      const row1 = document.getElementById('deals-row-1');
+      const row2 = document.getElementById('deals-row-2');
+      const row3 = document.getElementById('deals-row-3');
+      if (!row1 || !row2 || !row3) return;
+
+      try {
+        const response = await fetch(`${API_URL}/api/deals/trending?limit=30`, {
+          credentials: 'include'
+        });
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (!data.success || !Array.isArray(data.deals) || data.deals.length === 0) {
+          trendingDealsData = [];
+          trendingRenderedCount = 0;
+          resetTrendingRows();
+          updateTrendingMoreButton();
+          return;
+        }
+
+        trendingDealsData = data.deals;
+        trendingRenderedCount = 0;
+        trendingCardsPerRow = getTrendingCardsPerRow();
+        resetTrendingRows();
+        renderTrendingBatch();
+      } catch (error) {
+        console.error('Failed to load trending deals:', error);
+      }
+    }
+    
+    // Check authentication on page load
+    async function checkAuth() {
+      try {
+        const response = await fetch(`${API_URL}/api/auth/check`, {
+          credentials: 'include'
+        });
+        const data = await response.json();
+        
+        if (!data.authenticated) {
+          // Not logged in - redirect to login
+          window.location.href = '/login.html';
+          return false;
+        }
+        
+        // Update UI with user info
+        updateUserInfo(data.user);
+        loadTrendingDeals();
+        return true;
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        window.location.href = '/login.html';
+        return false;
+      }
+    }
+    
+    function updateUserInfo(user) {
+      // Update login button to show user name and logout
+      const loginBtn = document.querySelector('.btn-login');
+      if (loginBtn) {
+        loginBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          ${user.name}
+        `;
+        loginBtn.onclick = showUserMenu;
+      }
+    }
+    
+    function showUserMenu() {
+      const menu = document.createElement('div');
+      menu.className = 'user-menu';
+      menu.innerHTML = `
+        <div class="user-menu-item" onclick="logout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Logout
+        </div>
+      `;
+      menu.style.cssText = `position:absolute;top:60px;right:2.5rem;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:0.5rem;z-index:999;min-width:150px;`;
+      
+      const menuItem = menu.querySelector('.user-menu-item');
+      menuItem.style.cssText = `display:flex;align-items:center;gap:8px;padding:0.6rem 1rem;font-family:JetBrains Mono,monospace;font-size:0.75rem;color:var(--text2);cursor:pointer;border-radius:6px;transition:all 0.2s;`;
+      menuItem.onmouseenter = () => menuItem.style.background = 'rgba(255,77,46,0.1)';
+      menuItem.onmouseleave = () => menuItem.style.background = 'transparent';
+      
+      document.body.appendChild(menu);
+      
+      // Close on click outside
+      setTimeout(() => {
+        document.addEventListener('click', function closeMenu(e) {
+          if (!menu.contains(e.target)) {
+            menu.remove();
+            document.removeEventListener('click', closeMenu);
+          }
+        });
+      }, 100);
+    }
+    
+    async function logout() {
+      try {
+        await fetch(`${API_URL}/api/auth/logout`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+        window.location.href = '/login.html';
+      } catch (error) {
+        console.error('Logout error:', error);
+        window.location.href = '/login.html';
+      }
+    }
+    
+    // Run auth check immediately
+    checkAuth();
+  </script>
+  
+  <!-- Update analyze function to use backend -->
+  <script>
+    (function () {
+      function toNumber(value) {
+        const num = Number(value);
+        return Number.isFinite(num) ? num : null;
+      }
+
+      function formatInr(value) {
+        const num = toNumber(value);
+        if (num === null || num <= 0) return 'N/A';
+        return `Rs. ${num.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+      }
+
+      function recommendationLabel(code) {
+        const rec = String(code || '').toUpperCase();
+        if (rec === 'BUY_NOW') return { text: 'Recommendation: Buy Now', cls: 'buy' };
+        if (rec === 'WAIT') return { text: 'Recommendation: Wait', cls: 'wait' };
+        if (rec === 'RETRY_WITH_FULL_URL') return { text: 'Recommendation: Retry With Full URL', cls: 'wait' };
+        return { text: 'Recommendation: Price Unavailable', cls: 'na' };
+      }
+
+      function setAnalysisTab(tab) {
+        document.querySelectorAll('.analysis-tab-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.analysisTab === tab);
+        });
+        document.querySelectorAll('.analysis-panel').forEach((panel) => {
+          panel.classList.remove('active');
+        });
+        const panel = document.getElementById(`analysisPanel${tab.charAt(0).toUpperCase()}${tab.slice(1)}`);
+        if (panel) panel.classList.add('active');
+      }
+
+      function initAnalysisTabs() {
+        document.querySelectorAll('.analysis-tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => setAnalysisTab(btn.dataset.analysisTab));
+        });
+      }
+
+      function buildPredictionGraph(currentPrice, futurePrices) {
+        const points = [];
+        if (toNumber(currentPrice) !== null) {
+          points.push({ label: 'Now', value: Number(currentPrice) });
+        }
+
+        const order = [
+          ['7d', '7_days'],
+          ['15d', '15_days'],
+          ['30d', '30_days'],
+          ['60d', '60_days'],
+          ['90d', '90_days']
+        ];
+
+        order.forEach(([label, key]) => {
+          const val = futurePrices && toNumber(futurePrices[key]);
+          if (val !== null && val > 0) points.push({ label, value: val });
+        });
+
+        if (points.length < 2) {
+          return '<div style="font-family:JetBrains Mono,monospace;font-size:.75rem;color:var(--muted);padding:.5rem;">Not enough prediction points to draw chart.</div>';
+        }
+
+        const width = 620;
+        const height = 170;
+        const padX = 26;
+        const padY = 18;
+        const minV = Math.min(...points.map((p) => p.value));
+        const maxV = Math.max(...points.map((p) => p.value));
+        const span = Math.max(1, maxV - minV);
+
+        const coords = points.map((point, index) => {
+          const x = padX + ((width - padX * 2) * index) / (points.length - 1);
+          const y = padY + ((height - padY * 2) * (maxV - point.value)) / span;
+          return { ...point, x, y };
+        });
+
+        const path = coords.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+        const dots = coords.map((p) => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="#3cffdf"></circle>`).join('');
+        const labels = coords.map((p) => `<text x="${p.x.toFixed(1)}" y="${(height - 4).toFixed(1)}" fill="#6b6560" font-family="JetBrains Mono" font-size="10" text-anchor="middle">${p.label}</text>`).join('');
+
+        return `
+          <svg viewBox="0 0 ${width} ${height}" width="100%" height="170" role="img" aria-label="Price prediction graph">
+            <rect x="1" y="1" width="${width - 2}" height="${height - 2}" fill="transparent" stroke="#242424" />
+            <path d="${path}" fill="none" stroke="#c9ff3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            ${dots}
+            ${labels}
+          </svg>
+        `;
+      }
+
+      function setPlatformCard(platform, payload) {
+        const priceEl = document.getElementById(`analysis${platform}Price`);
+        const metaEl = document.getElementById(`analysis${platform}Meta`);
+        const linkEl = document.getElementById(`analysis${platform}Link`);
+
+        const item = payload || {};
+        const price = toNumber(item.price);
+        priceEl.textContent = price !== null && price > 0 ? formatInr(price) : 'N/A';
+
+        const title = String(item.title || item.message || item.availability || '').trim();
+        metaEl.textContent = title || 'Not available right now';
+
+        const url = String(item.url || '').trim();
+        if (url) {
+          linkEl.href = url;
+          linkEl.style.pointerEvents = 'auto';
+          linkEl.style.opacity = '1';
+        } else {
+          linkEl.href = '#';
+          linkEl.style.pointerEvents = 'none';
+          linkEl.style.opacity = '.45';
+        }
+      }
+
+      function renderPredictionList(currentPrice, futurePrices) {
+        const list = document.getElementById('analysisPredictionList');
+        const rows = [
+          ['Now', currentPrice],
+          ['7 Days', futurePrices && futurePrices['7_days']],
+          ['15 Days', futurePrices && futurePrices['15_days']],
+          ['30 Days', futurePrices && futurePrices['30_days']],
+          ['60 Days', futurePrices && futurePrices['60_days']],
+          ['90 Days', futurePrices && futurePrices['90_days']]
+        ];
+
+        list.innerHTML = rows.map(([k, v]) => `
+          <div class="prediction-item">
+            <div class="k">${k}</div>
+            <div class="v">${formatInr(v)}</div>
+          </div>
+        `).join('');
+      }
+
+      function buildAnalysisPlaceholderImage(productName) {
+        const cleanName = String(productName || 'Product').trim().slice(0, 28) || 'Product';
+        const safeName = cleanName
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+            <defs>
+              <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1a1a1a" />
+                <stop offset="100%" stop-color="#0d0d0d" />
+              </linearGradient>
+            </defs>
+            <rect width="400" height="400" fill="url(#bg)" />
+            <rect x="16" y="16" width="368" height="368" rx="18" fill="none" stroke="#2e2e2e" />
+            <text x="200" y="186" text-anchor="middle" fill="#e8e2d9" font-size="20" font-family="Arial, sans-serif">${safeName}</text>
+            <text x="200" y="220" text-anchor="middle" fill="#6b6560" font-size="14" font-family="Arial, sans-serif">Image unavailable</text>
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function renderAnalysis(data, submittedUrl) {
+        const section = document.getElementById('analysisResults');
+        if (!section) return;
+
+        const product = data.product || {};
+        const prediction = data.prediction || {};
+        const comparison = data.comparison || {};
+        const productName = String(product.name || data.product_name || 'Product');
+
+        const currentPriceNum = toNumber(product.current_price);
+        const maxSavingsNum = toNumber(prediction.max_savings);
+        const confidenceNum = toNumber(prediction.confidence);
+        const savingsPct = (currentPriceNum && maxSavingsNum) ? ((maxSavingsNum / currentPriceNum) * 100) : null;
+
+        const reco = recommendationLabel(prediction.recommendation);
+        const recoEl = document.getElementById('analysisRecommendation');
+        recoEl.className = `analysis-reco ${reco.cls}`;
+        recoEl.textContent = reco.text;
+
+        document.getElementById('analysisName').textContent = productName;
+        document.getElementById('analysisSource').textContent = `Source: ${String(data.source_platform || '').toUpperCase() || 'N/A'}`;
+        document.getElementById('analysisCurrentPrice').textContent = formatInr(product.current_price);
+        document.getElementById('analysisCheapest').textContent = `Cheapest: ${String(comparison.cheapest_platform || 'N/A').toUpperCase()}`;
+        document.getElementById('analysisDiff').textContent = `Diff: ${formatInr(comparison.price_difference)}`;
+
+        document.getElementById('analysisConfidence').textContent = confidenceNum !== null ? `${Math.round(confidenceNum * 100)}%` : 'N/A';
+        document.getElementById('analysisSavings').textContent = formatInr(prediction.max_savings);
+        document.getElementById('analysisBestTime').textContent = prediction.best_time_days ? `${prediction.best_time_days} days` : 'Now';
+        document.getElementById('analysisSavingsPct').textContent = savingsPct !== null ? `${savingsPct.toFixed(1)}%` : 'N/A';
+
+        const warningEl = document.getElementById('analysisWarning');
+        const warningText = String(data.warning || '').trim();
+        if (warningText) {
+          warningEl.style.display = 'block';
+          warningEl.textContent = warningText;
+        } else {
+          warningEl.style.display = 'none';
+          warningEl.textContent = '';
+        }
+
+        const image = String(product.image_url || (data.amazon && data.amazon.image_url) || (data.flipkart && data.flipkart.image_url) || '').trim();
+        const imgEl = document.getElementById('analysisImage');
+        const placeholderImage = buildAnalysisPlaceholderImage(productName);
+        imgEl.onerror = () => {
+          imgEl.onerror = null;
+          imgEl.src = placeholderImage;
+        };
+        imgEl.src = image || placeholderImage;
+
+        const resolvedUrl = String(data.resolved_url || data.source_url || submittedUrl || '').trim();
+        const urlEl = document.getElementById('analysisUrl');
+        urlEl.href = resolvedUrl || '#';
+        urlEl.textContent = resolvedUrl || 'No URL available';
+
+        const buyBtn = document.getElementById('analysisBuyBtn');
+        if (resolvedUrl) {
+          buyBtn.style.display = 'inline-flex';
+        } else {
+          buyBtn.style.display = 'none';
+        }
+
+        const platformCount = Array.isArray(data.platforms_found) ? data.platforms_found.length : 0;
+        const summary = [];
+        summary.push(`Platforms found: ${platformCount}`);
+        summary.push(`Recommendation: ${reco.text.replace('Recommendation: ', '')}`);
+        if (comparison.both_found && toNumber(comparison.price_difference) !== null) {
+          summary.push(`Cross-platform difference: ${formatInr(comparison.price_difference)}`);
+        }
+        document.getElementById('analysisSummary').textContent = summary.join(' | ');
+
+        document.getElementById('analysisGraphWrap').innerHTML = buildPredictionGraph(product.current_price, prediction.future_prices || {});
+        renderPredictionList(product.current_price, prediction.future_prices || {});
+
+        setPlatformCard('Amazon', data.amazon);
+        setPlatformCard('Flipkart', data.flipkart);
+
+        section.style.display = 'block';
+        setAnalysisTab('overview');
+        setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+      }
+
+      function setAnalyzeButtonState(btn, state) {
+        if (state === 'busy') {
+          btn.textContent = 'Analyzing...';
+          btn.style.background = 'var(--accent)';
+          btn.style.color = 'var(--bg)';
+          btn.disabled = true;
+          return;
+        }
+        if (state === 'done') {
+          btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg> Done!`;
+          return;
+        }
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Analyze`;
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.disabled = false;
+      }
+
+      initAnalysisTabs();
+
+      const existingBtn = document.querySelector('.btn-analyze');
+      if (!existingBtn) return;
+
+      const cleanBtn = existingBtn.cloneNode(true);
+      existingBtn.parentNode.replaceChild(cleanBtn, existingBtn);
+
+      cleanBtn.onclick = async function () {
+        const input = document.querySelector('.search-bar input');
+        const url = String(input && input.value ? input.value : '').trim();
+
+        if (!url) {
+          input.style.borderColor = 'var(--accent2)';
+          input.placeholder = 'Please paste a product link first...';
+          setTimeout(() => {
+            input.style.borderColor = '';
+            input.placeholder = 'Paste your Amazon, eBay or any product link here...';
+          }, 2500);
+          return;
+        }
+
+        setAnalyzeButtonState(this, 'busy');
+
+        try {
+          const response = await fetch(`${API_URL}/api/analyze`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ url })
+          });
+
+          const raw = await response.text();
+          let data = null;
+          try {
+            data = raw ? JSON.parse(raw) : {};
+          } catch (parseErr) {
+            throw new Error(`Server returned non-JSON response (HTTP ${response.status}).`);
+          }
+
+          if (response.status === 401) {
+            alert('Session expired. Please login again.');
+            window.location.href = '/login.html';
+            return;
+          }
+
+          if (!data.success) {
+            throw new Error(data.error || 'Analysis failed');
+          }
+
+          renderAnalysis(data, url);
+          setAnalyzeButtonState(this, 'done');
+          setTimeout(() => setAnalyzeButtonState(this, 'idle'), 1400);
+        } catch (error) {
+          setAnalyzeButtonState(this, 'idle');
+          alert(error.message || 'Server connection error. Please check if the backend is running.');
+          console.error('Analysis error:', error);
+        }
+      };
+    })();
+</script>
+</body>
+</html>

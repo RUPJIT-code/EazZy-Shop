@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0c0c" />
+  <title>EazZy Shop - Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0c0c0c;
+      --surface:    #111111;
+      --surface2:   #161616;
+      --surface3:   #1c1c1c;
+      --border:     #222222;
+      --border2:    #2a2a2a;
+      --text:       #e6e0d8;
+      --text2:      #a09890;
+      --muted:      #5a5450;
+      --accent:     #c9ff3c;
+      --accent-dim: rgba(201,255,60,.08);
+      --accent2:    #ff4d2e;
+      --accent3:    #3cffdf;
+      --gold:       #c9a84c;
+    }
+
+    html, body { min-height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /*  TOP NAV  */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      background: rgba(12,12,12,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-back {
+      display: flex; align-items: center; gap: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-back svg { width: 13px; height: 13px; transition: transform .2s; }
+    .nav-back:hover { color: var(--text2); }
+    .nav-back:hover svg { transform: translateX(-2px); }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: 2.5px;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo em { color: var(--accent); font-style: normal; }
+
+    .logo-pip {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+      animation: pip 2.4s ease-in-out infinite;
+    }
+    @keyframes pip {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,255,60,.55); }
+      50%      { box-shadow: 0 0 0 6px rgba(201,255,60,0); }
+    }
+
+    .nav-secure {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav-secure svg { width: 12px; height: 12px; color: var(--accent); }
+
+    /*  LAYOUT  */
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      min-height: 100vh;
+      padding-top: 56px;
+    }
+  /* Ensure panels occupy their grid columns and stay the same height.
+       Place brand panel on the right and auth panel on the left. */
+    .brand-panel { grid-column: 1; height: 100%; }
+    .auth-panel  { grid-column: 2; height: 100%; }
+    /* 
+       LEFT  Brand Panel
+     */
+    .brand-panel {
+      position: relative;
+      display: flex; flex-direction: column;
+      padding: 3.5rem 3.5rem;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* dot grid */
+    .brand-panel::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .bg-glow {
+      position: absolute; pointer-events: none; border-radius: 50%;
+    }
+    .bg-glow-1 {
+      width: 560px; height: 560px; top: -120px; left: -140px;
+      background: radial-gradient(circle, rgba(255,77,46,.065) 0%, transparent 65%);
+    }
+    .bg-glow-2 {
+      width: 380px; height: 380px; bottom: -60px; right: -60px;
+      background: radial-gradient(circle, rgba(201,255,60,.05) 0%, transparent 65%);
+    }
+
+    .brand-logo {
+      position: relative; z-index: 2;
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem;
+      letter-spacing: 3px; color: var(--text); text-decoration: none;
+    }
+    .brand-logo em { color: var(--accent); font-style: normal; }
+    .brand-logo .logo-pip { width: 7px; height: 7px; }
+
+    .brand-body {
+      position: relative; z-index: 2;
+      margin: auto 0; padding: 3.5rem 0;
+    }
+
+    .brand-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.8rem;
+    }
+    .brand-eyebrow::before {
+      content: ''; width: 22px; height: 1px;
+      background: var(--accent); opacity: .7;
+    }
+
+    .brand-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.6rem, 5.5vw, 5.8rem);
+      line-height: .9; letter-spacing: 1.5px;
+      color: var(--text); margin-bottom: 1.8rem;
+    }
+    .brand-headline .stroke {
+      -webkit-text-stroke: 1.5px rgba(201,255,60,.55);
+      color: transparent;
+    }
+    .brand-headline .red { color: var(--accent2); }
+
+    .brand-desc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem; color: var(--text2);
+      line-height: 1.85; max-width: 360px; margin-bottom: 2.8rem;
+    }
+
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: .95rem; }
+    .feature-list li {
+      display: flex; align-items: center; gap: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .74rem; color: var(--text2);
+    }
+    .feat-check {
+      width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0;
+      background: var(--accent-dim); border: 1px solid rgba(201,255,60,.18);
+      display: flex; align-items: center; justify-content: center; color: var(--accent);
+    }
+    .feat-check svg { width: 11px; height: 11px; }
+
+    .brand-stats {
+      position: relative; z-index: 2;
+      display: flex; border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; background: var(--surface2);
+    }
+    .bstat {
+      flex: 1; padding: 1.15rem 1.3rem;
+      border-right: 1px solid var(--border);
+    }
+    .bstat:last-child { border-right: none; }
+    .bstat-val {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.65rem;
+      letter-spacing: 1px; color: var(--accent);
+      display: block; line-height: 1; margin-bottom: 4px;
+    }
+    .bstat-lbl {
+      font-family: 'JetBrains Mono', monospace; font-size: .6rem;
+      letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted);
+    }
+
+    /* 
+       RIGHT  Auth Panel
+     */
+    .auth-panel {
+      position: relative;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3rem 3rem; background: var(--bg);
+    }
+
+    /* subtle corner brackets */
+    .corner { position: absolute; width: 40px; height: 40px; }
+    .c-tl { top: 1.8rem; left: 1.8rem; border-top: 1px solid var(--border2); border-left: 1px solid var(--border2); }
+    .c-br { bottom: 1.8rem; right: 1.8rem; border-bottom: 1px solid var(--border2); border-right: 1px solid var(--border2); }
+
+    /* SUCCESS overlay */
+    .success-cover {
+      position: absolute; inset: 0; z-index: 30;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1.2rem; text-align: center;
+      background: var(--bg); padding: 2rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .45s ease;
+    }
+    .success-cover.show { opacity: 1; pointer-events: all; }
+    .success-ring {
+      width: 62px; height: 62px; border-radius: 50%;
+      border: 1.5px solid rgba(201,255,60,.28);
+      background: var(--accent-dim);
+      display: flex; align-items: center; justify-content: center;
+      animation: ringPop .5s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes ringPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-ring svg { width: 26px; height: 26px; color: var(--accent); }
+    .success-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem;
+      letter-spacing: 2px; color: var(--text);
+    }
+    .success-msg {
+      font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+      color: var(--text2); line-height: 1.7; max-width: 270px;
+    }
+
+    /* Auth box */
+    .auth-box {
+      width: 100%; max-width: 415px;
+      animation: boxIn .55s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes boxIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    /*  VIEW SYSTEM  */
+    .view { display: none; }
+    .view.active { display: block; }
+    .view.anim-in {
+      animation: slideIn .35s cubic-bezier(.22,1,.36,1) both;
+    }
+    .view.anim-in-rev {
+      animation: slideInRev .35s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes slideIn    { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes slideInRev { from { opacity:0; transform:translateX(-16px); } to { opacity:1; transform:translateX(0); } }
+
+    /* stagger children */
+    .view.active .s { opacity: 0; animation: fieldUp .4s ease forwards; }
+    .view.active .s:nth-child(1)  { animation-delay:.04s }
+    .view.active .s:nth-child(2)  { animation-delay:.09s }
+    .view.active .s:nth-child(3)  { animation-delay:.14s }
+    .view.active .s:nth-child(4)  { animation-delay:.19s }
+    .view.active .s:nth-child(5)  { animation-delay:.24s }
+    .view.active .s:nth-child(6)  { animation-delay:.29s }
+    .view.active .s:nth-child(7)  { animation-delay:.34s }
+    .view.active .s:nth-child(8)  { animation-delay:.39s }
+    .view.active .s:nth-child(9)  { animation-delay:.44s }
+    .view.active .s:nth-child(10) { animation-delay:.49s }
+    @keyframes fieldUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    /*  FORM ELEMENTS  */
+    .auth-header { margin-bottom: 2rem; }
+    .auth-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .63rem; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: .85rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .auth-label::after { content:''; flex:1; max-width:36px; height:1px; background:var(--border2); }
+    .auth-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem;
+      letter-spacing: 1.5px; color: var(--text); line-height: 1; margin-bottom: .55rem;
+    }
+    .auth-sub {
+      font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+      color: var(--muted); line-height: 1.7;
+    }
+
+    /* Social */
+    .social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin-bottom: 1.5rem; }
+    .btn-social {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      padding: .7rem 1rem; background: var(--surface2);
+      border: 1px solid var(--border2); border-radius: 7px;
+      font-family: 'JetBrains Mono', monospace; font-size: .71rem;
+      color: var(--text2); cursor: pointer;
+      transition: background .2s, border-color .2s, color .2s, transform .15s;
+    }
+    .btn-social:hover {
+      background: var(--surface3); border-color: rgba(201,255,60,.22);
+      color: var(--text); transform: translateY(-1px);
+    }
+    .btn-social svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* Divider */
+    .or-line { display:flex; align-items:center; gap:.85rem; margin-bottom:1.5rem; }
+    .or-line::before,.or-line::after { content:''; flex:1; height:1px; background:var(--border); }
+    .or-line span {
+      font-family:'JetBrains Mono',monospace; font-size:.6rem;
+      letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); white-space:nowrap;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 1rem; }
+    .field-label {
+      font-family: 'JetBrains Mono', monospace; font-size: .63rem;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--muted); display: block; margin-bottom: .42rem;
+      transition: color .2s;
+    }
+    .field-wrap { position: relative; }
+    .field-icon {
+      position: absolute; left: .9rem; top: 50%; transform: translateY(-50%);
+      color: var(--muted); display: flex; align-items: center;
+      pointer-events: none; transition: color .25s;
+    }
+    .field-icon svg { width: 14px; height: 14px; }
+    .field-input {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 7px; padding: .8rem .85rem .8rem 2.55rem;
+      font-family: 'JetBrains Mono', monospace; font-size: .78rem;
+      color: var(--text); outline: none; caret-color: var(--accent);
+      transition: border-color .25s, background .25s, box-shadow .25s;
+    }
+    .field-input::placeholder { color: var(--muted); font-size: .72rem; }
+    .field-input:focus {
+      border-color: rgba(201,255,60,.4); background: var(--surface3);
+      box-shadow: 0 0 0 3px rgba(201,255,60,.06);
+    }
+    .field-wrap:focus-within .field-icon { color: rgba(201,255,60,.65); }
+    .field:focus-within .field-label { color: rgba(201,255,60,.75); }
+
+    .eye-btn {
+      position: absolute; right: .85rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; display: flex; align-items: center; padding: 0;
+      transition: color .2s;
+    }
+    .eye-btn:hover { color: var(--text2); }
+    .eye-btn svg { width: 14px; height: 14px; }
+    .field-input.pr { padding-right: 2.5rem; }
+
+    /* Strength */
+    .str-row { display:flex; gap:3px; margin-top:6px; }
+    .str-seg { flex:1; height:2px; border-radius:1px; background:var(--border2); transition:background .3s; }
+    .str-seg.weak   { background:var(--accent2); }
+    .str-seg.fair   { background:var(--gold); }
+    .str-seg.strong { background:var(--accent); }
+
+    /* Name row */
+    .name-row { display:grid; grid-template-columns:1fr 1fr; gap:.55rem; margin-bottom:1rem; }
+    .name-row .field { margin-bottom:0; }
+
+    /* Meta row */
+    .meta-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.4rem; }
+    .check-group { display:flex; align-items:center; gap:8px; cursor:pointer; }
+    .chk {
+      width:15px; height:15px; border-radius:4px; border:1px solid var(--border2);
+      background:var(--surface2); appearance:none; -webkit-appearance:none;
+      cursor:pointer; position:relative; flex-shrink:0; transition:background .2s, border-color .2s;
+    }
+    .chk:checked { background:var(--accent); border-color:var(--accent); }
+    .chk:checked::after {
+      content:''; position:absolute; left:3.5px; top:1px;
+      width:5px; height:9px;
+      border-right:1.8px solid #0c0c0c; border-bottom:1.8px solid #0c0c0c;
+      transform:rotate(42deg);
+    }
+    .chk-label { font-family:'JetBrains Mono',monospace; font-size:.69rem; color:var(--text2); user-select:none; }
+    .forgot {
+      font-family:'JetBrains Mono',monospace; font-size:.69rem;
+      color:var(--muted); text-decoration:none; transition:color .2s;
+    }
+    .forgot:hover { color:var(--accent); }
+
+    /* Terms */
+    .terms-row { display:flex; align-items:flex-start; gap:9px; margin-bottom:1.4rem; }
+    .terms-label {
+      font-family:'JetBrains Mono',monospace; font-size:.69rem;
+      color:var(--text2); line-height:1.65;
+    }
+    .terms-label a { color:var(--accent); text-decoration:none; }
+    .terms-label a:hover { text-decoration:underline; text-underline-offset:2px; }
+
+    /* Submit */
+    .btn-submit {
+      width:100%; padding:.88rem 1rem; border:none; border-radius:7px;
+      background:var(--accent2); color:#fff;
+      font-family:'Syne',sans-serif; font-size:.8rem;
+      font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      cursor:pointer; position:relative; overflow:hidden; margin-bottom:1.3rem;
+      transition:background .2s, transform .15s, box-shadow .2s;
+    }
+    .btn-submit::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.07) 50%, transparent 70%);
+      transform:translateX(-100%); transition:transform .5s ease;
+    }
+    .btn-submit:hover::after { transform:translateX(100%); }
+    .btn-submit:hover { background:#ff5f40; transform:translateY(-1px); box-shadow:0 8px 26px rgba(255,77,46,.25); }
+    .btn-submit:active { transform:translateY(0); box-shadow:none; }
+
+    .btn-submit.loading {
+      pointer-events:none; color:transparent; background:var(--surface3);
+    }
+    .btn-submit.loading::before {
+      content:''; position:absolute; inset:0; margin:auto;
+      width:18px; height:18px;
+      border:2px solid var(--border2); border-top-color:var(--accent);
+      border-radius:50%; animation:spin .65s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* Switch */
+    .switch-line {
+      text-align:center; font-family:'JetBrains Mono',monospace;
+      font-size:.71rem; color:var(--muted);
+    }
+    .switch-btn {
+      background:none; border:none; color:var(--accent);
+      font-family:'JetBrains Mono',monospace; font-size:.71rem;
+      cursor:pointer; padding:0; margin-left:4px;
+      text-decoration:underline; text-underline-offset:2px;
+      transition:color .2s;
+    }
+    .switch-btn:hover { color:#d5ff5c; }
+
+    /* Responsive */
+    @media (max-width:860px) {
+      .layout { grid-template-columns:1fr; }
+      .brand-panel { display:none; }
+      .auth-panel { padding:2rem 1.5rem; }
+      .auth-box { margin: 0 auto; }
+    }
+    /* Mobile / touch friendly */
+    @media (max-width: 600px) {
+      .top-nav { padding: 0 1rem; height: 52px; }
+      .layout { padding-top: 52px; }
+      .auth-panel { padding: 1.5rem .9rem; }
+      .auth-box { max-width: 100%; margin: 0 auto; }
+      .auth-title { font-size: 2rem; }
+      .btn-social, .btn-submit { min-height: 48px; }
+      .field-input { padding: .9rem .85rem .9rem 2.55rem; font-size: 16px; min-height: 48px; }
+      .name-row { grid-template-columns: 1fr; }
+      .social-btns { grid-template-columns: 1fr; }
+      .nav-secure { display: none; }
+      .nav-logo { position: absolute; left: 50%; transform: translateX(-50%); }
+    }
+    html { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="top-nav">
+    <a href="#" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Home
+    </a>
+    <a href="#" class="nav-logo">
+      <div class="logo-pip"></div>
+      EazZy<em>Shop</em>
+    </a>
+    <div class="nav-secure">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      256-bit SSL
+    </div>
+  </nav>
+
+  <div class="layout">
+
+    <!-- LEFT -->
+    <div class="brand-panel">
+      <div class="bg-glow bg-glow-1"></div>
+      <div class="bg-glow bg-glow-2"></div>
+
+      <a href="#" class="brand-logo">
+        <div class="logo-pip"></div>
+        EazZy<em>Shop</em>
+      </a>
+
+      <div class="brand-body">
+        <div class="brand-eyebrow">AI Price Intelligence</div>
+        <h2 class="brand-headline">
+          Shop<br>
+          <span class="red">Smart</span><br>
+          <span class="stroke">Save More</span>
+        </h2>
+        <p class="brand-desc">
+          EazZy Shop's AI scans price history, real vs. fake reviews, and the optimal moment to buy - so you never overpay again.
+        </p>
+        <ul class="feature-list">
+          <li>
+            <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Real-time tracking across 45+ retailers
+          </li>
+          <li>
+            <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+            AI-powered fake review detection
+          </li>
+          <li>
+            <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Price drop alerts &amp; deal scoring
+          </li>
+          <li>
+            <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Free forever - no credit card required
+          </li>
+        </ul>
+      </div>
+
+      <!-- NEW CHANGE -->
+       
+      <!-- <div class="brand-stats">
+        <div class="bstat">
+          <span class="bstat-val">240K+</span>
+          <span class="bstat-lbl">Active users</span>
+        </div>
+        <div class="bstat">
+          <span class="bstat-val">$2.4M</span>
+          <span class="bstat-lbl">Saved this month</span>
+        </div>
+        <div class="bstat">
+          <span class="bstat-val">45+</span>
+          <span class="bstat-lbl">Retailers tracked</span>
+        </div>
+      </div> -->
+    </div>
+
+    <!-- RIGHT -->
+    <div class="auth-panel">
+      <div class="corner c-tl"></div>
+      <div class="corner c-br"></div>
+
+      <!-- Success -->
+      <div class="success-cover" id="successCover">
+        <div class="success-ring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title" id="sTitle">Welcome Back!</div>
+        <div class="success-msg" id="sMsg">You're signed in. Redirecting to your dashboard...</div>
+      </div>
+
+      <div class="auth-box">
+
+        <!-- SIGN IN -->
+        <div class="view active" id="vSignin">
+
+          <div class="auth-header s">
+            <div class="auth-label">Sign In</div>
+            <h1 class="auth-title">Welcome back</h1>
+            <p class="auth-sub">Access your deals, alerts, and price history.</p>
+          </div>
+
+          <div class="social-btns s">
+            <button class="btn-social">
+              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              Continue with Google
+            </button>
+            <button class="btn-social">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              Continue with GitHub
+            </button>
+          </div>
+
+          <div class="or-line s"><span>or sign in with email</span></div>
+
+          <div class="field s">
+            <label class="field-label">Email address</label>
+            <div class="field-wrap">
+              <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+              <input id="si-email" class="field-input" type="email" placeholder="you@example.com" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="field s">
+            <label class="field-label">Password</label>
+            <div class="field-wrap">
+              <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <input id="si-pass" class="field-input pr" type="password" placeholder="Enter password" autocomplete="current-password">
+              <button class="eye-btn" type="button" onclick="toggleEye('si-pass',this)" tabindex="-1">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="meta-row s">
+            <label class="check-group">
+              <input type="checkbox" class="chk">
+              <span class="chk-label">Keep me signed in</span>
+            </label>
+            <a href="#" class="forgot">Forgot password?</a>
+          </div>
+
+          <button class="btn-submit s" id="si-btn" onclick="handleSignin()">Sign In</button>
+
+          <div class="switch-line s">
+            Don't have an account?
+            <button class="switch-btn" onclick="switchTo('signup')">Create one free</button>
+          </div>
+
+        </div><!-- /vSignin -->
+
+        <!-- SIGN UP -->
+        <div class="view" id="vSignup">
+
+          <div class="auth-header s">
+            <div class="auth-label">Create Account</div>
+            <h1 class="auth-title">Join EazZy Shop</h1>
+            <p class="auth-sub">Free forever. No credit card. Start saving in under a minute.</p>
+          </div>
+
+          <div class="social-btns s">
+            <button class="btn-social">
+              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              Sign up with Google
+            </button>
+            <button class="btn-social">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              Sign up with GitHub
+            </button>
+          </div>
+
+          <div class="or-line s"><span>or sign up with email</span></div>
+
+          <div class="name-row s">
+            <div class="field">
+              <label class="field-label">First name</label>
+              <div class="field-wrap">
+                <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                <input class="field-input" type="text" placeholder="Alex" autocomplete="given-name" id="su-fname">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">Last name</label>
+              <div class="field-wrap">
+                <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+                <input class="field-input" type="text" placeholder="Jordan" autocomplete="family-name" id="su-lname">
+              </div>
+            </div>
+          </div>
+
+          <div class="field s">
+            <label class="field-label">Email address</label>
+            <div class="field-wrap">
+              <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+              <input class="field-input" type="email" placeholder="you@example.com" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="field s">
+            <label class="field-label">Password</label>
+            <div class="field-wrap">
+              <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <input id="su-pass" class="field-input pr" type="password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStr(this)">
+              <button class="eye-btn" type="button" onclick="toggleEye('su-pass',this)" tabindex="-1">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="str-row">
+              <div class="str-seg" id="ss1"></div>
+              <div class="str-seg" id="ss2"></div>
+              <div class="str-seg" id="ss3"></div>
+              <div class="str-seg" id="ss4"></div>
+            </div>
+          </div>
+
+          <div class="terms-row s">
+            <input type="checkbox" class="chk" id="tc" style="margin-top:2px;">
+            <label class="terms-label" for="tc">
+              By creating an account you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </label>
+          </div>
+
+          <button class="btn-submit s" id="su-btn" onclick="handleSignup()">Create Free Account</button>
+
+          <div class="switch-line s">
+            Already have an account?
+            <button class="switch-btn" onclick="switchTo('signin')">Sign in</button>
+          </div>
+
+        </div><!-- /vSignup -->
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000';
+
+    /* VIEW SWITCH */
+    function switchTo(target) {
+      const si = document.getElementById('vSignin');
+      const su = document.getElementById('vSignup');
+      si.classList.remove('active','anim-in','anim-in-rev');
+      su.classList.remove('active','anim-in','anim-in-rev');
+      clearErrorMessages();
+      requestAnimationFrame(() => {
+        if (target === 'signup') {
+          su.classList.add('active','anim-in');
+        } else {
+          si.classList.add('active','anim-in-rev');
+        }
+      });
+    }
+
+    /* ERROR DISPLAY */
+    function showError(message, formType) {
+      const errorDiv = document.getElementById(formType === 'signin' ? 'si-error' : 'su-error');
+      if (!errorDiv) {
+        const container = formType === 'signin' ? document.getElementById('vSignin') : document.getElementById('vSignup');
+        const newErrorDiv = document.createElement('div');
+        newErrorDiv.id = formType === 'signin' ? 'si-error' : 'su-error';
+        newErrorDiv.className = 'error-message';
+        newErrorDiv.textContent = message;
+        container.querySelector('.auth-header').after(newErrorDiv);
+      } else {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    function clearErrorMessages() {
+      document.querySelectorAll('.error-message').forEach(el => el.remove());
+    }
+
+    /* EYE TOGGLE */
+    function toggleEye(id, btn) {
+      const inp = document.getElementById(id);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      btn.innerHTML = show
+        ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+        : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    }
+
+    /* PASSWORD STRENGTH */
+    function checkStr(inp) {
+      const v = inp.value;
+      let sc = 0;
+      if (v.length >= 8)          sc++;
+      if (/[A-Z]/.test(v))        sc++;
+      if (/[0-9]/.test(v))        sc++;
+      if (/[^A-Za-z0-9]/.test(v)) sc++;
+      const cls = sc <= 1 ? 'weak' : sc <= 2 ? 'fair' : 'strong';
+      [1,2,3,4].forEach(n => {
+        const s = document.getElementById('ss' + n);
+        s.className = 'str-seg' + (n <= sc ? ' ' + cls : '');
+      });
+    }
+
+    /* SUCCESS */
+    function showSuccess(title, msg) {
+      document.getElementById('sTitle').textContent = title;
+      document.getElementById('sMsg').textContent = msg;
+      document.getElementById('successCover').classList.add('show');
+    }
+
+    /* SIGN IN */
+    async function handleSignin() {
+      clearErrorMessages();
+      const btn = document.getElementById('si-btn');
+      if (btn.disabled) return;
+      
+      const email = document.getElementById('si-email').value.trim();
+      const password = document.getElementById('si-pass').value;
+      const rememberMe = document.querySelector('#vSignin .chk').checked;
+      
+      if (!email || !password) {
+        showError('Please enter both email and password', 'signin');
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+      
+      try {
+        const response = await fetch(`${API_URL}/api/auth/signin`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'include',
+          body: JSON.stringify({email, password, remember_me: rememberMe})
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showSuccess('Welcome back!', 'Signed in successfully. Redirecting...');
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 1500);
+        } else {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+          showError(data.error || 'Invalid email or password', 'signin');
+        }
+      } catch (error) {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        showError('Connection error. Please check if the server is running.', 'signin');
+        console.error('Signin error:', error);
+      }
+    }
+
+    /* SIGN UP */
+    async function handleSignup() {
+      clearErrorMessages();
+      const btn = document.getElementById('su-btn');
+      if (btn.disabled) return;
+      
+      const firstName = document.querySelector('#vSignup .name-row .field:first-child .field-input').value.trim();
+      const lastName = document.querySelector('#vSignup .name-row .field:last-child .field-input').value.trim();
+      const email = document.querySelector('#vSignup .field-input[type="email"]').value.trim();
+      const password = document.getElementById('su-pass').value;
+      const termsChecked = document.getElementById('tc').checked;
+      
+      if (!firstName || !lastName || !email || !password) {
+        showError('All fields are required', 'signup');
+        return;
+      }
+
+      if (!termsChecked) {
+        showError('Please accept the Terms of Service', 'signup');
+        return;
+      }
+
+      if (password.length < 8) {
+        showError('Password must be at least 8 characters', 'signup');
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+      
+      try {
+        const response = await fetch(`${API_URL}/api/auth/signup`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'include',
+          body: JSON.stringify({
+            email,
+            password,
+            first_name: firstName,
+            last_name: lastName
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showSuccess('Account created!', 'Welcome to EazZy Shop. Redirecting...');
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 1500);
+        } else {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+          showError(data.error || 'Could not create account', 'signup');
+        }
+      } catch (error) {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        showError('Connection error. Please check if the server is running.', 'signup');
+        console.error('Signup error:', error);
+      }
+    }
+
+    // Add CSS for error messages
+    const style = document.createElement('style');
+    style.textContent = `
+      .error-message {
+        background: rgba(255,77,46,.1);
+        border: 1px solid rgba(255,77,46,.3);
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        margin: 1rem 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        color: var(--accent2);
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Pressing Enter in auth fields should submit the active action.
+    function bindEnterToAction(input, action) {
+      if (!input) return;
+      input.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        action();
+      });
+    }
+
+    bindEnterToAction(document.getElementById('si-email'), handleSignin);
+    bindEnterToAction(document.getElementById('si-pass'), handleSignin);
+    bindEnterToAction(document.getElementById('su-fname'), handleSignup);
+    bindEnterToAction(document.getElementById('su-lname'), handleSignup);
+    bindEnterToAction(document.querySelector('#vSignup .field-input[type="email"]'), handleSignup);
+    bindEnterToAction(document.getElementById('su-pass'), handleSignup);
+  </script>
+</body>
+</html>
