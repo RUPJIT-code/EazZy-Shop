@@ -28,7 +28,7 @@ from flask import Flask, abort, jsonify, request, send_from_directory, session
 from flask_cors import CORS
 
 # ── local scraper module ──────────────────────────────────────────────────────
-from scraper import analyze_url
+from scraper import analyze_url, detect_fake_reviews
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = secrets.token_hex(32)
@@ -477,6 +477,28 @@ def analyze_product():
 # ─────────────────────────────────────────────────────────────────────────────
 # Static file serving
 # ─────────────────────────────────────────────────────────────────────────────
+
+@app.route('/api/reviews/fake-detection', methods=['POST'])
+@login_required
+def analyze_fake_reviews():
+    """
+    Accepts { "url": "..." } and returns fake/real review metrics.
+    """
+    try:
+        data = request.get_json(silent=True) or {}
+        raw_url = str(data.get('url', '')).strip()
+        if not raw_url:
+            return jsonify({'success': False, 'error': 'URL is required'}), 400
+
+        result = detect_fake_reviews(raw_url)
+        if result.get('success'):
+            result['analyzed_by'] = session['user_email']
+            result['analyzed_at'] = datetime.now().isoformat()
+        return jsonify(result), 200 if result.get('success') else 400
+    except Exception as e:
+        print(f"[analyze_fake_reviews] Unhandled error: {traceback.format_exc()}")
+        return jsonify({'success': False, 'error': f'Review detection failed: {str(e)}'}), 500
+
 
 @app.route('/api/compare/product', methods=['POST'])
 @login_required

@@ -247,8 +247,9 @@
     }
 
     .search-bar {
-      display: flex;
-      align-items: center;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: stretch;
       background: var(--surface);
       border: 1.5px solid var(--border2);
       border-radius: 8px;
@@ -269,7 +270,6 @@
     .search-icon svg { width: 18px; height: 18px; }
 
     .search-bar input {
-      flex: 1;
       background: none;
       border: none;
       outline: none;
@@ -278,6 +278,7 @@
       font-size: .88rem;
       padding: 1.1rem .5rem;
       letter-spacing: .5px;
+      min-width: 0;
     }
     .search-bar input::placeholder { color: var(--muted); }
 
@@ -297,7 +298,9 @@
       white-space: nowrap;
       display: flex; align-items: center; gap: 8px;
       transition: background .2s, transform .15s, box-shadow .2s;
-      flex-shrink: 0;
+      grid-column: 1 / -1;
+      width: calc(100% - 12px);
+      justify-content: center;
     }
     .btn-analyze:hover {
       background: #ff6347;
@@ -1639,6 +1642,206 @@
     .platform-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--accent); margin-bottom: .4rem; letter-spacing: 1px; }
     .platform-meta { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--muted); line-height: 1.5; margin-bottom: .6rem; }
     .platform-link { display: inline-block; text-decoration: none; border-radius: 6px; border: 1px solid rgba(60,255,223,.3); background: rgba(60,255,223,.08); color: var(--accent3); font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .5px; padding: .38rem .55rem; }
+    .review-detect-actions { display: block; margin-top: .8rem; }
+    .review-detect-btn {
+      border: none;
+      background: var(--accent2);
+      color: #fff;
+      border-radius: 5px;
+      padding: .75rem 1.8rem;
+      font-family: 'Syne', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      width: 100%;
+      justify-content: center;
+    }
+    .review-detect-actions .review-detect-btn + .review-detect-btn { margin-top: .6rem; }
+    .review-detect-btn:hover { background: #ff6347; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(255,77,46,.35); }
+    .review-detect-btn:disabled { opacity: .7; pointer-events: none; }
+    .review-detect-btn svg { width: 16px; height: 16px; }
+    .review-detect-btn.alt {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      text-transform: none;
+      font-size: .72rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      letter-spacing: .5px;
+      padding: .58rem .85rem;
+      min-height: auto;
+    }
+    .review-detect-error {
+      display: none;
+      margin-top: .8rem;
+      border: 1px solid rgba(255,77,46,.35);
+      border-radius: 8px;
+      background: rgba(255,77,46,.08);
+      color: var(--accent2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .74rem;
+      line-height: 1.5;
+      padding: .55rem .65rem;
+    }
+    .review-detect-results { display: none; margin-top: 1rem; }
+    .review-detect-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(280px, 2fr);
+      gap: .8rem;
+      margin-bottom: .8rem;
+    }
+    .review-score-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface2);
+      padding: .9rem;
+    }
+    .review-score-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .66rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .25rem;
+    }
+    .review-score-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+      line-height: 1;
+      color: var(--accent2);
+      margin-bottom: .35rem;
+    }
+    .review-risk-tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: .22rem .52rem;
+      border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .64rem;
+      letter-spacing: .9px;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--surface);
+    }
+    .review-risk-tag.low { color: var(--accent); border-color: rgba(201,255,60,.35); background: rgba(201,255,60,.08); }
+    .review-risk-tag.medium { color: #ffd166; border-color: rgba(255,209,102,.35); background: rgba(255,209,102,.1); }
+    .review-risk-tag.high { color: var(--accent2); border-color: rgba(255,77,46,.35); background: rgba(255,77,46,.12); }
+    .review-bar-group { display: grid; gap: .5rem; }
+    .review-bar-row { display: grid; grid-template-columns: 70px 1fr 52px; gap: .55rem; align-items: center; }
+    .review-bar-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .67rem;
+      letter-spacing: .6px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .review-bar-track {
+      height: 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #161616;
+      overflow: hidden;
+    }
+    .review-bar-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff4d2e 0%, #ffd166 52%, #c9ff3c 100%);
+      transition: width .35s ease;
+    }
+    .review-bar-fill.real {
+      background: linear-gradient(90deg, #3cffdf 0%, #9eff7c 100%);
+    }
+    .review-bar-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      color: var(--text);
+      text-align: right;
+    }
+    .review-meta-strip {
+      margin-top: .6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+    .review-meta-pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .24rem .48rem;
+      background: var(--surface);
+    }
+    .review-signal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .55rem;
+      margin-top: .8rem;
+    }
+    .review-signal {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface2);
+      padding: .5rem .55rem;
+    }
+    .review-signal .k {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .63rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: .2rem;
+    }
+    .review-signal .v {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .review-list { display: grid; gap: .6rem; margin-top: .85rem; }
+    .review-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface2);
+      padding: .65rem .7rem;
+    }
+    .review-item-head {
+      display: flex;
+      justify-content: space-between;
+      gap: .7rem;
+      align-items: center;
+      margin-bottom: .4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .67rem;
+      color: var(--muted);
+    }
+    .review-item-score {
+      border: 1px solid rgba(255,77,46,.35);
+      background: rgba(255,77,46,.12);
+      color: var(--accent2);
+      border-radius: 999px;
+      padding: .18rem .45rem;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .review-item-text { font-size: .85rem; line-height: 1.55; color: var(--text2); }
+    .review-item-reasons {
+      margin-top: .45rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .66rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
 
     /*  CATEGORIES SECTION  */
     .cats-grid {
@@ -1965,6 +2168,9 @@
       .analysis-img { width: 120px; height: 120px; }
       .prediction-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .platform-grid { grid-template-columns: 1fr; }
+      .review-detect-grid { grid-template-columns: 1fr; }
+      .review-signal-grid { grid-template-columns: 1fr; }
+      .review-bar-row { grid-template-columns: 60px 1fr 48px; }
     }
     @media (max-width: 600px) {
       .product-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2554,7 +2760,7 @@
       .search-wrap { padding: 0 .5rem; }
       .search-bar { display: grid; grid-template-columns: auto minmax(0, 1fr); border-radius: 10px; }
       .search-bar input { min-height: 48px; font-size: 16px; }
-      .btn-analyze { min-height: 44px; padding: .85rem 1.2rem; margin: 8px 0 10px; grid-column: 1 / -1; justify-self: center; }
+      .btn-analyze { min-height: 44px; padding: .85rem 1.2rem; margin: 8px; grid-column: 1 / -1; width: calc(100% - 16px); justify-self: stretch; }
       .feature-strip { flex-direction: column; }
       .feature-item { width: 100%; padding: 1rem 1.2rem; border-right: none; border-bottom: 1px solid var(--border); }
       .feature-item:last-child { border-bottom: none; }
@@ -2822,6 +3028,85 @@
           <a class="platform-link" id="analysisFlipkartLink" href="#" target="_blank" rel="noopener noreferrer">Open Flipkart</a>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+<section class="section fade-in" id="fakeReviewSection" style="padding-top:0;">
+  <div class="section-head">
+    <div class="section-title">
+      <h2>Fake Review Detection</h2>
+      <span class="badge"> Smart AI system </span>
+    </div>
+  </div>
+
+  <div class="analysis-panel-card">
+    <div class="compare-url-wrap">
+      <span class="compare-url-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+      </span>
+      <input
+        id="reviewDetectUrlInput"
+        class="compare-url-input"
+        type="text"
+        placeholder="Paste Amazon/Flipkart product URL to detect fake reviews"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="review-detect-actions">
+      <button id="reviewDetectBtn" class="review-detect-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        Check
+      </button>
+      <!-- <button id="reviewUseCurrentBtn" class="review-detect-btn alt" type="button">Use last analyzed URL</button> -->
+    </div>
+
+    <div id="reviewDetectError" class="review-detect-error"></div>
+  </div>
+
+  <div id="reviewDetectResults" class="review-detect-results">
+    <div class="review-detect-grid">
+      <div class="review-score-card">
+        <div class="review-score-label">Fake Review Percentage</div>
+        <div class="review-score-value" id="reviewFakePct">0%</div>
+        <span class="review-risk-tag low" id="reviewRiskTag">LOW</span>
+        <div class="review-meta-strip">
+          <span class="review-meta-pill" id="reviewConfidence">Confidence: 0%</span>
+          <span class="review-meta-pill" id="reviewTotalAnalyzed">Analyzed: 0</span>
+        </div>
+      </div>
+      <div class="analysis-panel-card">
+        <div class="review-bar-group">
+          <div class="review-bar-row">
+            <div class="review-bar-lbl">Fake</div>
+            <div class="review-bar-track"><span class="review-bar-fill" id="reviewFakeBar"></span></div>
+            <div class="review-bar-val" id="reviewFakeBarVal">0%</div>
+          </div>
+          <div class="review-bar-row">
+            <div class="review-bar-lbl">Real</div>
+            <div class="review-bar-track"><span class="review-bar-fill real" id="reviewRealBar"></span></div>
+            <div class="review-bar-val" id="reviewRealBarVal">0%</div>
+          </div>
+        </div>
+        <div class="review-meta-strip" style="margin-top:.8rem;">
+          <span class="review-meta-pill" id="reviewMetaRating">Avg Rating: N/A</span>
+          <span class="review-meta-pill" id="reviewMetaCounts">Ratings/Reviews: N/A</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="analysis-panel-card">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.73rem;line-height:1.6;color:var(--muted);" id="reviewSummaryText"></div>
+      <div class="review-signal-grid" id="reviewSignals"></div>
+    </div>
+
+    <div class="analysis-panel-card" style="margin-top:.8rem;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);">Top Suspicious Reviews</div>
+      <div class="review-list" id="reviewSuspiciousList"></div>
     </div>
   </div>
 </section>
@@ -5206,6 +5491,12 @@
         section.style.display = 'block';
         setAnalysisTab('overview');
         setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+        document.dispatchEvent(new CustomEvent('eazzyshop:analysis-complete', {
+          detail: {
+            url: resolvedUrl,
+            productName
+          }
+        }));
       }
 
       function setAnalyzeButtonState(btn, state) {
@@ -5243,7 +5534,7 @@
           input.placeholder = 'Please paste a product link first...';
           setTimeout(() => {
             input.style.borderColor = '';
-            input.placeholder = 'Paste your Amazon, eBay or any product link here...';
+            input.placeholder = 'Paste your Amazon/Flipkart product link here...';
           }, 2500);
           return;
         }
@@ -5295,6 +5586,254 @@
         }
       };
     })();
+</script>
+<script>
+  (function () {
+    const urlInput = document.getElementById('reviewDetectUrlInput');
+    const detectBtn = document.getElementById('reviewDetectBtn');
+    const useCurrentBtn = document.getElementById('reviewUseCurrentBtn');
+    const errorBox = document.getElementById('reviewDetectError');
+    const resultsWrap = document.getElementById('reviewDetectResults');
+
+    if (!urlInput || !detectBtn || !resultsWrap || !errorBox) return;
+
+    function toNumber(value) {
+      const num = Number(value);
+      return Number.isFinite(num) ? num : null;
+    }
+
+    function escapeText(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatPct(value) {
+      const num = Math.max(0, Math.min(100, Number(value) || 0));
+      return `${num.toFixed(1)}%`;
+    }
+
+    function formatCount(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num) || num < 0) return 'N/A';
+      return num.toLocaleString('en-IN');
+    }
+
+    function setError(message) {
+      const text = String(message || '').trim();
+      if (!text) {
+        errorBox.style.display = 'none';
+        errorBox.textContent = '';
+        return;
+      }
+      errorBox.style.display = 'block';
+      errorBox.textContent = text;
+    }
+
+    function setBusy(isBusy) {
+      detectBtn.disabled = Boolean(isBusy);
+      if (isBusy) {
+        detectBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7v5l3 2"></path>
+          </svg>
+          Checking...
+        `;
+        return;
+      }
+      detectBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>
+        </svg>
+        Check
+      `;
+    }
+
+    function applyRiskTag(level) {
+      const tag = document.getElementById('reviewRiskTag');
+      if (!tag) return;
+      const raw = String(level || 'LOW').toUpperCase();
+      const mapped = (raw === 'HIGH' || raw === 'MEDIUM' || raw === 'LOW') ? raw : 'LOW';
+      tag.className = `review-risk-tag ${mapped.toLowerCase()}`;
+      tag.textContent = mapped;
+    }
+
+    function renderSignals(signals) {
+      const target = document.getElementById('reviewSignals');
+      if (!target) return;
+      const source = signals && typeof signals === 'object' ? signals : {};
+      const rows = [
+        ['Duplicate Reviews', source.duplicate_reviews],
+        ['Short Reviews', source.short_reviews],
+        ['Promo Language', source.promo_language_reviews],
+        ['Rating Mismatch', source.rating_mismatch_reviews]
+      ];
+
+      target.innerHTML = rows.map(([label, value]) => `
+        <div class="review-signal">
+          <div class="k">${escapeText(label)}</div>
+          <div class="v">${escapeText(formatCount(value))}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderSuspicious(reviews) {
+      const list = document.getElementById('reviewSuspiciousList');
+      if (!list) return;
+      const rows = Array.isArray(reviews) ? reviews : [];
+      if (rows.length === 0) {
+        list.innerHTML = `
+          <div class="review-item">
+            <div class="review-item-text">No suspicious review snippets were extracted.</div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = rows.slice(0, 5).map((row) => {
+        const fakeScore = Math.max(0, Math.min(100, Math.round((Number(row.fake_score) || 0) * 100)));
+        const rating = toNumber(row.rating);
+        const ratingText = rating !== null ? `${rating.toFixed(1)}/5` : 'N/A';
+        const reasons = Array.isArray(row.reasons) ? row.reasons.filter(Boolean).slice(0, 3).join(' | ') : '';
+        return `
+          <div class="review-item">
+            <div class="review-item-head">
+              <span>Rating: ${escapeText(ratingText)}</span>
+              <span class="review-item-score">Suspicion ${escapeText(String(fakeScore))}%</span>
+            </div>
+            <div class="review-item-text">${escapeText(String(row.text || '').slice(0, 420))}</div>
+            <div class="review-item-reasons">${escapeText(reasons || 'No rule-based signals listed.')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderReviewDetection(data, submittedUrl) {
+      const product = data && data.product && typeof data.product === 'object' ? data.product : {};
+      const meta = data && data.reviews_meta && typeof data.reviews_meta === 'object' ? data.reviews_meta : {};
+      const detection = data && data.review_detection && typeof data.review_detection === 'object' ? data.review_detection : {};
+
+      const fakePct = Math.max(0, Math.min(100, Number(detection.fake_percentage) || 0));
+      const realPct = Math.max(0, Math.min(100, Number(detection.real_percentage) || (100 - fakePct)));
+      const confidence = Math.max(0, Math.min(100, (Number(detection.confidence) || 0) * 100));
+      const analyzed = Number(detection.total_reviews_analyzed) || 0;
+
+      const fakePctText = formatPct(fakePct);
+      const realPctText = formatPct(realPct);
+
+      document.getElementById('reviewFakePct').textContent = fakePctText;
+      document.getElementById('reviewFakeBar').style.width = fakePctText;
+      document.getElementById('reviewRealBar').style.width = realPctText;
+      document.getElementById('reviewFakeBarVal').textContent = fakePctText;
+      document.getElementById('reviewRealBarVal').textContent = realPctText;
+      document.getElementById('reviewConfidence').textContent = `Confidence: ${Math.round(confidence)}%`;
+      document.getElementById('reviewTotalAnalyzed').textContent = `Analyzed: ${formatCount(analyzed)}`;
+
+      const avgRating = toNumber(meta.average_rating);
+      document.getElementById('reviewMetaRating').textContent = `Avg Rating: ${avgRating !== null ? avgRating.toFixed(1) : 'N/A'}`;
+      document.getElementById('reviewMetaCounts').textContent = `Ratings/Reviews: ${formatCount(meta.total_ratings)} / ${formatCount(meta.total_reviews)}`;
+
+      const platform = String(data.source_platform || '').toUpperCase() || 'N/A';
+      const summaryText = [
+        `Product: ${String(product.name || 'Product')}`,
+        `Platform: ${platform}`,
+        `URL: ${String(data.resolved_url || submittedUrl || '')}`,
+        String(detection.summary || ''),
+        String(data.warning || '')
+      ].filter(Boolean).join(' | ');
+      document.getElementById('reviewSummaryText').textContent = summaryText;
+
+      applyRiskTag(detection.risk_level);
+      renderSignals(detection.signals || {});
+      renderSuspicious(detection.top_suspicious_reviews || []);
+
+      resultsWrap.style.display = 'block';
+      setTimeout(() => {
+        resultsWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 60);
+    }
+
+    async function runDetection() {
+      const url = String(urlInput.value || '').trim();
+      if (!url) {
+        urlInput.classList.add('is-error');
+        setError('Please paste a product URL before running fake review detection.');
+        setTimeout(() => urlInput.classList.remove('is-error'), 1800);
+        return;
+      }
+
+      setBusy(true);
+      setError('');
+
+      try {
+        const response = await fetch(`${API_URL}/api/reviews/fake-detection`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ url })
+        });
+
+        const raw = await response.text();
+        let data = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch (parseErr) {
+          throw new Error(`Server returned non-JSON response (HTTP ${response.status}).`);
+        }
+
+        if (response.status === 401) {
+          window.location.href = '/login.html';
+          return;
+        }
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Review detection failed');
+        }
+
+        renderReviewDetection(data, url);
+      } catch (error) {
+        resultsWrap.style.display = 'none';
+        setError(error.message || 'Could not detect fake reviews for this URL.');
+        console.error('Fake review detection error:', error);
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    detectBtn.addEventListener('click', runDetection);
+    urlInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        runDetection();
+      }
+    });
+
+    if (useCurrentBtn) {
+      useCurrentBtn.addEventListener('click', () => {
+        const analysisUrlEl = document.getElementById('analysisUrl');
+        const latestUrl = String((analysisUrlEl && analysisUrlEl.href) || '').trim();
+        if (latestUrl && latestUrl !== '#') {
+          urlInput.value = latestUrl;
+          urlInput.focus();
+          setError('');
+        } else {
+          setError('No analyzed URL found yet. Run product analysis first or paste a URL manually.');
+        }
+      });
+    }
+
+    document.addEventListener('eazzyshop:analysis-complete', (event) => {
+      const detail = event && event.detail ? event.detail : {};
+      const latestUrl = String(detail.url || '').trim();
+      if (!latestUrl || latestUrl === '#') return;
+      if (!String(urlInput.value || '').trim()) {
+        urlInput.value = latestUrl;
+      }
+    });
+  })();
 </script>
 </body>
 </html>
